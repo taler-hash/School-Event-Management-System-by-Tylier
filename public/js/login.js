@@ -33,7 +33,7 @@ $(document).ready(function(){
                 },
                 success:function(res)
                 {
-                    console.log(res);
+                    console.log(res)
                     window.location = '/admin/dashboard';
                 },
                 error:function(err)

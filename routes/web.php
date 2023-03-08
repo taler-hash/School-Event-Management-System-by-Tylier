@@ -19,7 +19,7 @@ Route::get('/login', function () {
 
 Route::get('/admin/dashboard', function () {
     return view('/admin/index');
-});
+})->middleware('isLoggedin');
 
 //Api Routes
 Route::post('/api/login',[loginController::class,'login']);
