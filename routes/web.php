@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\loginController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,7 +12,14 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
+//View Routes
 Route::get('/login', function () {
     return view('login');
 });
+
+Route::get('/admin/dashboard', function () {
+    return view('/admin/index');
+});
+
+//Api Routes
+Route::post('/api/login',[loginController::class,'login']);

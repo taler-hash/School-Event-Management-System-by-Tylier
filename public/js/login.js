@@ -23,6 +23,24 @@ $(document).ready(function(){
 
     //Login Button onClick --------------------------------------------------
     $(document).on('click','#loginButton',function(){
-        console.log($("#username").val())
+        $.ajax({
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                url: `/api/login`,
+                method: 'post',
+                data:{
+                    username: $('#loginUsername').val(),
+                    password: $('#loginPassword').val()
+                },
+                success:function(res)
+                {
+                    console.log(res);
+                    window.location = '/admin/dashboard';
+                },
+                error:function(err)
+                {
+                    console.log(err);
+                }
+            })
+        
     })
 })

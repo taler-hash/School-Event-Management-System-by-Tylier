@@ -16,8 +16,8 @@ class adminSeeder extends Seeder
         if(!Admin::select('*')->first())
         {
             $admin = new Admin();
-            $admin->username = Crypt::encryptString('ctuadmin');
-            $admin->password = Crypt::encryptString('ctuadmin123');
+            $admin->username ='ctuadmin';
+            $admin->password = 'ctuadmin123';
             $admin->save();
         }
     }
