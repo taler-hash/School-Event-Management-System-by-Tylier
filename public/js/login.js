@@ -109,6 +109,7 @@ $(document).ready(function(){
         $("#createStudentid, #createUsername, #createEmail, #createPassword, #createRetypepassword").each(function(){
             $(this).val("");
         })
+        $("#createCourse, #createYear option").prop("selected", false);
     })
 
     //Form-------------------------------------------------------------------
@@ -144,27 +145,37 @@ $(document).ready(function(){
 
     //Create Button submit --------------------------------------------------
     $(document).on('click','#createButtonsubmit',function(){
+        $(".createErrors").remove()
         loadingButton('create', 'Register')
+        console.log($('#createStudentid').val())
         $.ajax({
             headers:header,
             url:'/api/create',
             method:'post',
             data:{
-                studentId:$('createStudentid').val(),
-                fullname:$('createUsername').val(),
-                course:$("#createCourse").find(':selected').val(),
-                year:$("#createYear").find(':selected').val(),
-                email:$('#createEmail').val(),
-                password:$('#createPassword').val(),
-                retypePassword:$('#createRetypepassword').val()
+                Studentid:$('#createStudentid').val(),
+                Username:$('#createUsername').val(),
+                Course:$("#createCourse").find(':selected').val(),
+                Year:$("#createYear").find(':selected').val(),
+                Email:$('#createEmail').val(),
+                Password:$('#createPassword').val(),
+                Retypepassword:$('#createRetypepassword').val()
             },
             success:function(res)
             {
-                console.log(res)
+                toastr.success(`Successfully Registered`, "Success")
+                $("#createClose").trigger("click")
             },
             error:function(err)
             {
-                console.log(err)
+                $.each(err.responseJSON.errors, function(key, value){
+                    console.log(key)
+                    $(`#create${key}`).parent().parent().append(
+                        value.map(e=>{
+                            return `<small class="createErrors text-rose-500">• ${value}</small>`
+                        })
+                    )
+                })
             }
         })
     })
