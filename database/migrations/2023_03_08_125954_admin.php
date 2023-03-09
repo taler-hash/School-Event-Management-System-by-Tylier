@@ -15,6 +15,7 @@ return new class extends Migration
             $table->increments('admin_id');
             $table->string('username', '300');
             $table->string('password', '300');
+            $table->string('type', '300');
         });
     }
 

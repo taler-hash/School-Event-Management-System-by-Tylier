@@ -1,6 +1,7 @@
 $(document).ready(function(){
     //Create Function-----------------------------------------------------
-    
+
+    //Modal---------------------------------------------------------------
     $(document).on('click','#createButton', function(){
         $("#createModal").removeClass('opacity-0').removeClass('invisible')
         $("#createModalContent").removeClass('scale-0')
@@ -20,6 +21,10 @@ $(document).ready(function(){
             $(this).val("");
         })
     })
+
+    //Form-------------------------------------------------------------------
+
+    
 
     //Login Button onClick --------------------------------------------------
     $(document).on('click','#loginButton',function(){
