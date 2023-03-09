@@ -5,9 +5,8 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Session;
 
-class authCheck
+class managerAuth
 {
     /**
      * Handle an incoming request.
@@ -16,7 +15,7 @@ class authCheck
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if($request->session()->missing('name') && !session('data') === 'admin')
+        if($request->session()->missing('name') && !session('data') === 'manager')
         {
             return redirect('/login');
         }
@@ -24,4 +23,3 @@ class authCheck
         return $next($request);
     }
 }
-

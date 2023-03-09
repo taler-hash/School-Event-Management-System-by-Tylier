@@ -5,9 +5,8 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Session;
 
-class authCheck
+class adminAuth
 {
     /**
      * Handle an incoming request.
@@ -16,12 +15,19 @@ class authCheck
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if($request->session()->missing('name') && !session('data') === 'admin')
+        dd(session('name'));
+        if(!$request->session()->missing('name') )
+        {
+            if(session('data') === 'student')
+            {
+                return $next($request);
+            }
+        }
+        else
         {
             return redirect('/login');
         }
         
-        return $next($request);
+       
     }
 }
-

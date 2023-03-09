@@ -6,10 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     @include('../header/header')
     <script src={{ asset('./js/admin.js') }}></script>
-    <title>Admin Dashboard</title>
+    <title>Manager Dashboard</title>
 </head>
 <body>
-    <main>Admin Dashboard</main>
+    <main>Manager Dashboard</main>
     <button id="logoutButton">logout</button>
 </body>
 </html>
