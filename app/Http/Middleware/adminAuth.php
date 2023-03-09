@@ -18,7 +18,7 @@ class adminAuth
         dd(session('name'));
         if(!$request->session()->missing('name') )
         {
-            if(session('data') === 'student')
+            if(session('data') === 'admin')
             {
                 return $next($request);
             }
