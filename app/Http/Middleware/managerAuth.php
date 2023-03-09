@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Session;
 
 class managerAuth
 {
@@ -15,11 +16,10 @@ class managerAuth
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if($request->session()->missing('name') && !session('data') === 'manager')
+        if($request->session()->missing('name') || session('data') !== 'manager' )
         {
             return redirect('/login');
         }
-        
         return $next($request);
     }
 }

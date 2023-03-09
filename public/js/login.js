@@ -44,8 +44,14 @@ $(document).ready(function(){
                 },
                 success:function(res)
                 {
+                    if(res === 'admin')
+                    window.location = '/admin/dashboard'
+                    if(res === 'manager')
+                    window.location = '/manager/dashboard'
+                    if(res === 'student')
+                    window.location = '/student/dashboard'
                     console.log(res)
-                    window.location="/admin/dashboard"
+                    
                 },
                 error:function(err)
                 {

@@ -10,6 +10,7 @@
 </head>
 <body>
     <main>Manager Dashboard</main>
+    {{ session('name')}}
     <button id="logoutButton">logout</button>
 </body>
 </html>

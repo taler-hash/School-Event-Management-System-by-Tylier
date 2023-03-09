@@ -15,12 +15,10 @@ class studentAuth
      */
     public function handle(Request $request, Closure $next): Response
     {
-        dd(!$request->session()->missing('name') and session('data') === 'student');
-        if($request->session()->missing('name') && !session('data') === 'student')
+        if($request->session()->missing('name') || session('data') !== 'student' )
         {
             return redirect('/login');
         }
-        
         return $next($request);
     }
 }

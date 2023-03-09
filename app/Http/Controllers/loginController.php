@@ -12,11 +12,10 @@ class loginController extends Controller
         $checkTableadmin = DB::table('admin')
         ->where('username', $request->username)
         ->where('password', $request->password)->get();
-        if($checkTableadmin->isNotEmpty())
+        if($checkTableadmin->isNotEmpty() && $checkTableadmin->pluck('type')->implode(', ') === 'admin')
         {
             session(['name'=> $request->username ,'data'=> $checkTableadmin->pluck('type')->implode(', ')]);
-            dd("Admin");
-            return response()->json("success");
+            return response()->json("admin");
         }
         else
         {
@@ -28,17 +27,15 @@ class loginController extends Controller
             ->where('student_id', $request->username)
             ->where('password', $request->password)->get();
 
-            if($checkTablemanager->isNotEmpty())
+            if($checkTablemanager->isNotEmpty() && $checkTableadmin->pluck('type')->implode(', ') === 'manager')
             {
                 session(['name'=> $request->username ,'data'=> $checkTablemanager->pluck('type')->implode(', ')]);
-                dd("Manager");
-                return response()->json("success");
+                return response()->json("manager");
             }
             if($checkTableusers->isNotEmpty())
             {
                 session(['name'=> $request->username ,'data'=> 'student']);
-                dd("Student");
-                return response()->json("success");
+                return response()->json("student");
             }
             return response()->json("fail");
         }

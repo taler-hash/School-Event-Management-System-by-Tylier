@@ -15,18 +15,11 @@ class adminAuth
      */
     public function handle(Request $request, Closure $next): Response
     {
-        dd(session('name'));
-        if(!$request->session()->missing('name') )
-        {
-            if(session('data') === 'admin')
-            {
-                return $next($request);
-            }
-        }
-        else
+        if($request->session()->missing('name') || session('data') !== 'admin' )
         {
             return redirect('/login');
         }
+        return $next($request);
         
        
     }
