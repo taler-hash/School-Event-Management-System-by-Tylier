@@ -3,7 +3,7 @@ $(document).ready(function(){
     let courses = []
     let results = []
     let students = []
-    let total = []
+    let total = 0
     //Fetch Course
     function fetchCourse()
     {
@@ -34,7 +34,7 @@ $(document).ready(function(){
         })
     }
     $.when(fetchCourse(), fetchStudents())
-
+   
     //MultiSelect----------------------------------------------
 
     //Refresh Multi Select
@@ -75,7 +75,9 @@ $(document).ready(function(){
             }
         })
         results = newArray
+        $(".totalVoucher").text(total = total + students.filter(e=>{return e.course == $(this).text()}).length)
         RefreshMultiSelectNewEvent()
+        
     })
 
     //Click Choices to Remove in Multi Select

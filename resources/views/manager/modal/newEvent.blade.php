@@ -34,7 +34,7 @@
                             <button id="" class="newEventSelectAllChoices ml-1 px-1 text-sm bg-lime-500 text-white transition hover:bg-red-600 rounded py-0.5">Select All</button>
                         </label>
                         <div class="text-sm flex items-center space-x-2">
-                            1303 :Total Vouchers 
+                            <span class="totalVoucher font-bold">0</span> :Total Vouchers 
                         </div>
                     </div>
                     <div id="" class="multiSelectNewEvent relative flex flex-wrap bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1 pr-10">
