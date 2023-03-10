@@ -2,6 +2,8 @@ $(document).ready(function(){
 
     let courses = []
     let results = []
+    let students = []
+    let total = []
     //Fetch Course
     function fetchCourse()
     {
@@ -13,13 +15,25 @@ $(document).ready(function(){
                 courses = res.map((e, i)=>{
                     return {course: e.course, isDefault: true}
                 })
-                current = []
             },
             error:function(){
             }
         })
     }
-    fetchCourse()
+    
+    //Fetch Students
+    function fetchStudents()
+    {
+        $.ajax({
+            headers:header,
+            url:'/api/students',
+            method:'get',
+            success:function(res){
+                students = res;
+            }
+        })
+    }
+    $.when(fetchCourse(), fetchStudents())
 
     //MultiSelect----------------------------------------------
 

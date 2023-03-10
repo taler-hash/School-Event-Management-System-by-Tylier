@@ -32,6 +32,7 @@ Route::prefix('api')->group(function(){
 
     //Manager
     Route::get('/course',[managerController::class,'course']);
+    Route::get('/students',[managerController::class,'students']);
 });
 
 //Admin

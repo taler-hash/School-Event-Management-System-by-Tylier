@@ -28,10 +28,15 @@
                     <input type="text" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Input Description" required>
                 </div>
                 <div class="">
-                    <label for="countries" class="block mb-2 text-sm font-medium text-gray-900 flex items-center">
-                        Choose a Course to See 
-                        <button id="" class="newEventSelectAllChoices ml-1 px-1 text-sm bg-lime-500 text-white transition hover:bg-red-600 rounded py-0.5">Select All</button>
-                    </label>
+                    <div class="flex justify-between">
+                        <label for="countries" class="block mb-2 text-sm font-medium text-gray-900 flex items-center">
+                            Choose a Course to See 
+                            <button id="" class="newEventSelectAllChoices ml-1 px-1 text-sm bg-lime-500 text-white transition hover:bg-red-600 rounded py-0.5">Select All</button>
+                        </label>
+                        <div class="text-sm flex items-center space-x-2">
+                            1303 :Total Vouchers 
+                        </div>
+                    </div>
                     <div id="" class="multiSelectNewEvent relative flex flex-wrap bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1 pr-10">
                         <button id="" class="multiSelectCaretNewEvent absolute cursor-pointer top-0 right-0 h-full items-center flex px-2 border-l-2">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -42,6 +47,19 @@
                         </div>
                         <div id="" class="choiceswrapperNewEvent flex min-h-[2rem] flex-wrap">
                             <div class="choicesNewEvent px-2 p-1 border rounded bg-white  mr-0.5 my-0.5">BSIT</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 ">Date</label>
+                    <div class="grid grid-cols-2">
+                        <div class="">
+                            <p class="text-xs pb-2">From</p>
+                            <input type="date" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mr-2 " placeholder="Input Description" required>
+                        </div>
+                        <div class="">
+                            <p class="text-xs ml-2 pb-2">To</p>
+                            <input type="date" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ml-2 " placeholder="Input Description" required>
                         </div>
                     </div>
                 </div>
