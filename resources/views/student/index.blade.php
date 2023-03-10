@@ -10,7 +10,7 @@
 </head>
 <body>
     <main class="w-full h-screen bg-gray-100 text-gray-700">
-        <nav class="w-full h-fit px-6 py-2  shadow-md">
+        <nav class="w-full h-fit px-6 py-2  shadow-md bg-white">
             <div class="flex justify-between">
                 <div class="flex items-center space-x-4 h-full">
                     <img src={{asset("/assets/login/ctulogo.png")}} alt="" class="h-16">
@@ -19,7 +19,7 @@
                 
                 <div class="flex items-center">
                     <ul class="flex space-x-4">
-                        <li class="text-black text-rose-600">Dashboard</li>
+                        <li class="text-black text-rose-600">Events</li>
                         <li class="">Announcement</li>
                     </ul>
                     <button class=" w-fit px-6 h-full">

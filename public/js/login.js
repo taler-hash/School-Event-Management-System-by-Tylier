@@ -50,12 +50,11 @@ $(document).ready(function(){
                     window.location = '/manager/dashboard'
                     if(res === 'student')
                     window.location = '/student/dashboard'
-                    console.log(res)
                     
                 },
                 error:function(err)
                 {
-                    console.log(err);
+                    
                 }
             })
         
@@ -95,21 +94,22 @@ $(document).ready(function(){
         $("#createModal").removeClass('opacity-0').removeClass('invisible')
         $("#createModalContent").removeClass('scale-0')
     })
-
+    //Close Modal
     $(document).on('click','#createClose',function(){
         let modal = $(this).parent().parent().parent().parent()
         $("#createModalContent").addClass('scale-0')
         setTimeout(() => {
             modal.addClass("invisible")
             $(".errorUsername").empty();
-            $("#usernameEdit").val("")
+            $("#createStudentid, #createUsername, #createEmail, #createPassword, #createRetypepassword").each(function(){
+                $(this).val("");
+            })
+            $("#createCourse, #createYear option").prop("selected", false);
         }, 100);
 
         modal.removeClass("opacity-100").addClass("opacity-0")
-        $("#createStudentid, #createUsername, #createEmail, #createPassword, #createRetypepassword").each(function(){
-            $(this).val("");
-        })
-        $("#createCourse, #createYear option").prop("selected", false);
+
+        
     })
 
     //Form-------------------------------------------------------------------
@@ -147,7 +147,6 @@ $(document).ready(function(){
     $(document).on('click','#createButtonsubmit',function(){
         $(".createErrors").remove()
         loadingButton('create', 'Register')
-        console.log($('#createStudentid').val())
         $.ajax({
             headers:header,
             url:'/api/create',
@@ -169,7 +168,6 @@ $(document).ready(function(){
             error:function(err)
             {
                 $.each(err.responseJSON.errors, function(key, value){
-                    console.log(key)
                     $(`#create${key}`).parent().parent().append(
                         value.map(e=>{
                             return `<small class="createErrors text-rose-500">• ${value}</small>`

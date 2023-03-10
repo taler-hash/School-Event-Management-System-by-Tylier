@@ -19,6 +19,21 @@ class adminSeeder extends Seeder
             $admin->username ='ctuadmin';
             $admin->password = 'ctuadmin123';
             $admin->type = 'admin';
+            $admin->position = 'admin';
+            $admin->save();
+
+            $admin = new Admin();
+            $admin->username ='ctuteacher';
+            $admin->password = 'ctuteacher123';
+            $admin->type = 'manager';
+            $admin->position = 'teacher';
+            $admin->save();
+
+            $admin = new Admin();
+            $admin->username ='ctussg';
+            $admin->password = 'ctussg123';
+            $admin->type = 'manager';
+            $admin->position = 'ssg';
             $admin->save();
         }
     }

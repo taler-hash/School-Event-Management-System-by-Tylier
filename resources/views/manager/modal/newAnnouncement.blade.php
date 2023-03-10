@@ -1,0 +1,44 @@
+<div id="newAnnouncementModal" tabindex="-1" aria-hidden="true" class="fixed invisible transition opacity-0 bg-gray-100/50 top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-screen md:h-full flex items-center justify-center">
+    <div class="relative w-full h-full max-w-lg md:h-auto">
+        <!-- Modal content -->
+        <div id="newAnnouncementModalContent" class="relative bg-white rounded-lg shadow transition scale-0 duration-500">
+            <!-- Modal header -->
+            <div class="flex items-start justify-between p-4 border-b rounded-t ">
+                <h3 class="text-xl font-semibold text-gray-900">
+                    Create Announcement
+                </h3>
+                <button id="newAnnouncementClose" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" data-modal-hide="defaultModal">
+                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div class="p-6 space-y-4">
+                <div class="">
+                    <div class="">
+                        <label for="countries" class="block mb-2 text-sm font-medium text-gray-900 flex items-center">
+                            Choose a Course to See 
+                            <button id="" class="newEventSelectAllChoices ml-1 px-1 text-sm bg-lime-500 text-white transition hover:bg-red-600 rounded py-0.5">Select All</button>
+                        </label>
+                        <div id="" class="multiSelectNewEvent relative flex flex-wrap bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1 pr-10">
+                            <button id="" class="multiSelectCaretNewEvent absolute cursor-pointer top-0 right-0 h-full items-center flex px-2 border-l-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </button>
+                            <div id="" class="multiSelectResultsNewEvent absolute transition scale-0 top-12 h-48 w-full min-h-fit rounded-md border bg-white left-0 overflow-x-hidden overflow-y-auto">
+                            </div>
+                            <div id="" class="choiceswrapperNewEvent flex min-h-[2rem] flex-wrap">
+                                <div class="choicesNewEvent px-2 p-1 border rounded bg-white  mr-0.5 my-0.5">BSIT</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="flex items-center justify-center w-full p-6 space-x-2 border-t border-gray-200 rounded-b">
+                <button id="newAnnouncementButtonsubmit" data-modal-hide="defaultModal" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Create</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\loginController;
 use App\Http\Controllers\createController;
 use App\Http\Controllers\adminController;
+use App\Http\Controllers\managerController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -18,7 +19,9 @@ use App\Http\Controllers\adminController;
 Route::get('/login', function () {
     return view('login');
 });
-
+Route::get('/', function () {
+    return redirect('/login');
+});
 
 
 //Api Routes
@@ -26,15 +29,15 @@ Route::get('/login', function () {
 Route::prefix('api')->group(function(){
     Route::post('/login',[loginController::class,'login']);
     Route::post('/create',[createController::class,'create']);
+
+    //Manager
+    Route::get('/course',[managerController::class,'course']);
 });
 
 //Admin
 Route::prefix('admin')->middleware('adminAuth')->group(function(){
     Route::get('/dashboard', function () {
         return view('/admin/index');
-    });
-    Route::get('/sample', function () {
-        return response()->json("success");
     });
 });
 
