@@ -34,6 +34,7 @@ Route::prefix('api')->group(function(){
     //Manager
     Route::get('/course',[managerController::class,'course']);
     Route::get('/students',[managerController::class,'students']);
+    Route::post('/events',[managerController::class,'events']);
 });
 
 //Admin

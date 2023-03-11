@@ -1,7 +1,7 @@
 <div id="newEventModal" tabindex="-1" aria-hidden="true" class="fixed invisible transition opacity-0 bg-gray-100/50 top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-hidden md:inset-0 h-screen md:h-full flex items-center justify-center">
     <div class="relative w-full h-full max-w-lg md:h-auto">
         <!-- Modal content -->
-        <div id="newEventModalContent" class="relative bg-white rounded-lg shadow transition scale-0 duration-500">
+        <div id="newEventModalContent" class="relative bg-white rounded-lg shadow transition scale-0 duration-500 h-full">
             <!-- Modal header -->
             <div class="flex items-start justify-between p-4 border-b rounded-t ">
                 <h3 class="text-xl font-semibold text-gray-900">
@@ -34,7 +34,7 @@
                             <button id="" class="newEventSelectAllChoices ml-1 px-1 text-sm bg-lime-500 text-white transition hover:bg-red-600 rounded py-0.5">Select All</button>
                         </label>
                         <div class="text-sm flex items-center space-x-2">
-                            <span class="newEventTotalStudents font-bold">0</span> :Total Students 
+                            <span id="newEventTotalStudents" class=" font-bold">0</span> :Total Students 
                         </div>
                     </div>
                     <div id="" class="multiSelectNewEvent relative flex flex-wrap bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1 pr-10">

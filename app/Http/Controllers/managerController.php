@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\Course;
 use App\Models\Students;
 use App\Models\Event;
-use Carbon\Carbon;
 
 class managerController extends Controller
 {
@@ -24,10 +23,14 @@ class managerController extends Controller
         $students = Students::select('student_id','fullname','course','year')->get();
         return response()->json($students);
     }
+    public function events(Request $request){
+        $events = Event::select('*')->where('created_by', $request->createdBy)->orderBy('event_id', 'desc')->get();
+        return response()->json($events);
+    }
     public function newEvent(Request $request){
         $request->validate([
             'Picture' => '|image |mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'Header' => 'required',
+            'Header' => 'required | unique:events,header',
             'Description' => 'required',
             'Courses' => 'required',
             'Date' => 'required | after:today',
@@ -45,7 +48,6 @@ class managerController extends Controller
 
         $picture = $request->file('Picture');
         $filename = time() . '.' . $picture->getClientOriginalExtension();
-        $picture->move(public_path('images/'.$request->input('managerName')), $filename);
         
         $event = new Event();
             $event->picture = $filename;
@@ -53,11 +55,12 @@ class managerController extends Controller
             $event->description = $request->input('Description');
             $event->total_students = $request->input('TotalStudents');
             $event->courses =  collect($request->input('Courses'))->implode(",");
-            $event->start_date = $request->input('managerName');
+            $event->created_by = $request->input('managerName');
             $event->start_date = $request->input('Date');
             $event->start_time = $request->input('StartTime');
             $event->end_time = $request->input('EndTime');
             $event->save();
+            $picture->move(public_path('images/'.$request->input('managerName')), $filename);
         return response()->json("success");
     }
 }
