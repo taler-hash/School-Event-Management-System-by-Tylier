@@ -29,6 +29,7 @@ Route::get('/', function () {
 Route::prefix('api')->group(function(){
     Route::post('/login',[loginController::class,'login']);
     Route::post('/create',[createController::class,'create']);
+    Route::post('/newEvent',[managerController::class, 'newEvent']);
 
     //Manager
     Route::get('/course',[managerController::class,'course']);

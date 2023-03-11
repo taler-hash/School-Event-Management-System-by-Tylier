@@ -1,6 +1,25 @@
 let header = {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')};
 $(document).ready(function(){
-
+    let course = []
+    //Fetch Course
+    $.ajax({
+        headers:header,
+        url:'/api/course',
+        method:'get',
+        success:function(res)
+        {
+            course = res
+            $('#createCourse').append(
+                res.map(e=>{
+                    return `<option value="${e.course}">${e.course}</option>`
+                })
+            )
+        },
+        error:function(err)
+        {
+            console.log(err)
+        }
+    })
     //Functions----------------------------------------------------------
     function loadingButton(buttonType, buttonLabel)
         {
@@ -33,14 +52,15 @@ $(document).ready(function(){
 
     //Login Button submit -----------------------------------------------
     $(document).on('click','#loginButtonsubmit',function(){
+        $(".loginErrors").remove();
         loadingButton('login', 'Login')
         $.ajax({
             headers: header,
                 url: `/api/login`,
                 method: 'post',
                 data:{
-                    username: $('#loginUsername').val(),
-                    password: $('#loginPassword').val()
+                    Username: $('#loginUsername').val(),
+                    Password: $('#loginPassword').val()
                 },
                 success:function(res)
                 {
@@ -50,11 +70,18 @@ $(document).ready(function(){
                     window.location = '/manager/dashboard'
                     if(res === 'student')
                     window.location = '/student/dashboard'
-                    
+                    if(res === 'fail')
+                    toastr.error(`No Account Found`, "Error")
                 },
                 error:function(err)
                 {
-                    
+                    $.each(err.responseJSON.errors, function(key, value){
+                        value.map(e=>{
+                            $(`#login${key}`).parent().parent().append(
+                                `<div class="loginErrors text-rose-500 text-sm">• ${e}</div>`
+                            )
+                        })
+                    })
                 }
             })
         
@@ -104,12 +131,11 @@ $(document).ready(function(){
             $("#createStudentid, #createUsername, #createEmail, #createPassword, #createRetypepassword").each(function(){
                 $(this).val("");
             })
-            $("#createCourse, #createYear option").prop("selected", false);
+            $("#createCourse option, #createYear option").prop("selected", false);
         }, 100);
 
         modal.removeClass("opacity-100").addClass("opacity-0")
 
-        
     })
 
     //Form-------------------------------------------------------------------
@@ -178,6 +204,4 @@ $(document).ready(function(){
         })
     })
 
-
-    
 })

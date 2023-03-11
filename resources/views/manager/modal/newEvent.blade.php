@@ -1,4 +1,4 @@
-<div id="newEventModal" tabindex="-1" aria-hidden="true" class="fixed invisible transition opacity-0 bg-gray-100/50 top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-screen md:h-full flex items-center justify-center">
+<div id="newEventModal" tabindex="-1" aria-hidden="true" class="fixed invisible transition opacity-0 bg-gray-100/50 top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-hidden md:inset-0 h-screen md:h-full flex items-center justify-center">
     <div class="relative w-full h-full max-w-lg md:h-auto">
         <!-- Modal content -->
         <div id="newEventModalContent" class="relative bg-white rounded-lg shadow transition scale-0 duration-500">
@@ -13,28 +13,28 @@
                 </button>
             </div>
             <!-- Modal body -->
-            <div class="p-6 space-y-4">
+            <div class="p-6 space-y-4 overflow-y-auto h-96">
                 <div class="">
                     <label class="block mb-2 text-sm font-medium text-gray-900 " for="file_input">Header Picture</label>
-                    <input class="block py-2 w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50" type="file" accept="image/*">
+                    <input id="newEventPicture" class="block py-2 w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50" type="file" accept="image/*">
                     <p class=" text-xs text-gray-500 " >SVG, PNG, JPG or GIF (MAX. 800x400px).</p>
                 </div>
                 <div class="">
-                    <label for="email" class="block mb-2 text-sm font-medium text-gray-900 ">Text Header</label>
-                    <input type="text" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Input Header" required>
+                    <label class="block mb-2 text-sm font-medium text-gray-900 ">Text Header</label>
+                    <input id="newEventHeader" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Input Header" required>
                 </div>
                 <div class="">
                     <label for="email" class="block mb-2 text-sm font-medium text-gray-900 ">Description</label>
-                    <input type="text" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Input Description" required>
+                    <input type="text" id="newEventDescription" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Input Description" required>
                 </div>
                 <div class="">
-                    <div class="flex justify-between">
+                    <div class="lg:flex justify-between">
                         <label for="countries" class="block mb-2 text-sm font-medium text-gray-900 flex items-center">
                             Choose a Course to See 
                             <button id="" class="newEventSelectAllChoices ml-1 px-1 text-sm bg-lime-500 text-white transition hover:bg-red-600 rounded py-0.5">Select All</button>
                         </label>
                         <div class="text-sm flex items-center space-x-2">
-                            <span class="totalVoucher font-bold">0</span> :Total Vouchers 
+                            <span class="newEventTotalStudents font-bold">0</span> :Total Students 
                         </div>
                     </div>
                     <div id="" class="multiSelectNewEvent relative flex flex-wrap bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1 pr-10">
@@ -46,22 +46,27 @@
                         <div id="" class="multiSelectResultsNewEvent absolute transition scale-0 top-12 h-48 w-full min-h-fit rounded-md border bg-white left-0 overflow-x-hidden overflow-y-auto">
                         </div>
                         <div id="" class="choiceswrapperNewEvent flex min-h-[2rem] flex-wrap">
-                            <div class="choicesNewEvent px-2 p-1 border rounded bg-white  mr-0.5 my-0.5">BSIT</div>
+                            
                         </div>
                     </div>
                 </div>
                 <div class="">
-                    <label class="block mb-2 text-sm font-medium text-gray-900 ">Date</label>
-                    <div class="grid grid-cols-2">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 ">Start Date</label>
+                    <input type="date" id="newEventDate" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Input Description" required>
+                </div>
+                <div class="">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 ">Time</label>
+                    <div class="grid grid-cols-2 gap-x-2">
                         <div class="">
-                            <p class="text-xs pb-2">From</p>
-                            <input type="date" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mr-2 " placeholder="Input Description" required>
+                            <label class="block mb-2 text-xs font-medium text-gray-900 ">From</label>
+                            <input id="newEventStartTime" type="time" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
                         </div>
                         <div class="">
-                            <p class="text-xs ml-2 pb-2">To</p>
-                            <input type="date" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ml-2 " placeholder="Input Description" required>
+                            <label class="block mb-2 text-xs font-medium text-gray-900 ">To</label>
+                            <input type="time" id="newEventEndTime" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
                         </div>
                     </div>
+                    
                 </div>
             </div>
             <!-- Modal footer -->

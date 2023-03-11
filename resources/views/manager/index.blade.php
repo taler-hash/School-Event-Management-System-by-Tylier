@@ -25,7 +25,7 @@
                     </button>
                     <div id="managerOption" class="absolute transition scale-0 top-12 right-8 w-40 h-fit shadow-md bg-white rounded-md border overflow-hidden">
                         <div class="p-4 border-b-[1px]">
-                            <p class="text-sm">Acc: {{session('name')}}</p>
+                            <p class="text-sm">Acc: <span id="managerName">{{session('name')}}</span></p>
                         </div>
                         <div id="logoutButton" class="px-4 py-2 border-b-[1px] transition hover:bg-amber-400 hover:bg-rose-600">
                             <p class="text-center">Log out</p>

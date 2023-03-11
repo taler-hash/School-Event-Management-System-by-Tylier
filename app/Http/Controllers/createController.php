@@ -20,11 +20,12 @@ class createController extends Controller
         [
             'Username.required'=>'Username Required',
             'Password.required'=>'Password Required',
+            'Password.same' =>'The password must be the same in Retype Password'
         
         ]);
         DB::table('users')->insert([
             'student_id' => $request->Studentid,
-            'fullname' => $request->Username,
+            'fullname' => strtoupper($request->Username),
             'course' => $request->Course,
             'year' => $request->Year,
             'email' => $request->Email,

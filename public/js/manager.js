@@ -60,6 +60,7 @@ $(document).ready(function(){
         {
             $(".choiceswrapperNewEvent").html(`<p class=" text-center flex items-center text-gray-400">Please Select Course</p>`)
         }
+        $(".totalVoucher").text(total )
     }
 
     //Click Results in Multi Select
@@ -75,7 +76,7 @@ $(document).ready(function(){
             }
         })
         results = newArray
-        $(".totalVoucher").text(total = total + students.filter(e=>{return e.course == $(this).text()}).length)
+        total = total + students.filter(e=>{return e.course == $(this).text()}).length
         RefreshMultiSelectNewEvent()
         
     })
@@ -93,6 +94,7 @@ $(document).ready(function(){
             }
         })
         results = newArray
+        total = total - students.filter(e=>{return e.course == $(this).text()}).length
         RefreshMultiSelectNewEvent()
     })
     //Select All Choices
@@ -101,6 +103,7 @@ $(document).ready(function(){
                 return {...e, isDefault:false}
         })
         results = newArray
+        total = students.length
         RefreshMultiSelectNewEvent()
     })
     
@@ -141,10 +144,65 @@ $(document).ready(function(){
             modal.addClass("invisible")
             MultiSelectshowNewEvent = true
             results = courses
+            total = 0 
             RefreshMultiSelectNewEvent()
             closeMultiSelect()
+            $(".newEventErrors ").remove()
         }, 100)
 
+    })
+
+    //New Event Button Submit
+    $(document).on("click","#newEventButtonsubmit",function(e){
+        e.preventDefault()
+        $(".newEventErrors ").remove()
+        let filteredCourses = results.filter((e,i) => { if(!e.isDefault)return e.course})
+        console.log(filteredCourses.map((e,i) => {return e.course}))
+        let form = new FormData()
+        form.append('Picture', $("#newEventPicture")[0].files[0])
+        form.append('Header',$("#newEventHeader").val())
+        form.append('Description',$("#newEventDescription").val())
+        form.append('TotalStudents',$("#newEventTotalStudents").text())
+        form.append('Courses',filteredCourses.map((e,i) => {return e.course}))
+        form.append('managerName',$("#managerName").text())
+        form.append('Date',$("#newEventDate").val())
+        form.append('StartTime',$("#newEventStartTime").val())
+        form.append('EndTime',$("#newEventEndTime").val())
+        
+        $.ajax({
+            headers:header,
+            url:'/api/newEvent',
+            data:form,
+            processData: false,
+            contentType: false,
+            method:'post',
+            success:function(res)
+            {
+                console.log(res)
+            },
+            error:function(err)
+            {
+                
+                $.each(err.responseJSON.errors, function(key, value){
+                    if(key === "Courses")
+                    {
+                        value.map(e=>{
+                            $(".multiSelectNewEvent").parent().append(
+                                `<div class="newEventErrors text-rose-500 text-sm">• ${e}</div>`
+                            )
+                        })
+                    }
+                        value.map(e=>{
+                            $(`#newEvent${key}`).parent().append(
+                            `<div class="newEventErrors text-rose-500 text-sm">• ${e}</div>`
+                            )
+                        })
+                    
+
+                })
+            }
+
+        })
     })
 
     

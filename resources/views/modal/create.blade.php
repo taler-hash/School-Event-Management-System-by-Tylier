@@ -43,10 +43,6 @@
                         </div>
                         <select id="createCourse" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5">
                         <option value="" selected>Choose a Course</option>
-                        <option value="BSIT">BSIT</option>
-                        <option value="BSED">BSED</option>
-                        <option value="BSHM">BSHM</option>
-                        <option value="BSPolsci">BSPolsci</option>
                         </select>
                     </div>
                 </div>
