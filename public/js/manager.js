@@ -57,41 +57,40 @@ $(document).ready(function(){
         return result
     }
     $.when(fetchCourse(), fetchStudents())
-
-    fetchEvents().then(data=>{
-        console.log(data.length)
-        data.length !== 0 ? 
-        $("#managerEventsContainer").html(
-            data.map(e=>{
-                console.log(e)
-                return `<div class="eventModal max-w-sm h-fit bg-white border border-gray-200 rounded-lg shadow  m-4">
-                <a href="#">
-                    <img src="http://${window.location.host}/images/${$("#managerName").text()}/${e.picture}" alt="" class="rounded-t-md">
-                </a>
-                <div class="p-5">
-                    <a href="#">
-                        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">${e.header}</h5>
-                    </a>
-                    <p class="mb-3 font-normal text-gray-700 ">${e.description}</p>
-                    <button id="${e.event_id}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-amber-400 bg-red-600 rounded-lg hover:bg-green-600 transition">
-                        Read more
-                        <svg aria-hidden="true" class="w-4 h-4 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                    </button>
-                </div>
-            </div>`
-            })
-        )
-        :
-        $("#managerEventsContainer").html(
-        `<div class="font-bold flex items-center">
-            No New Events    
-        </div>`
-        )
-    })
-    
     //RefreshEvents
-
-
+    function refreshEvents()
+    {
+        fetchEvents().then(data=>{
+            data.length !== 0 ? 
+            $("#managerEventsContainer").html(
+                data.map(e=>{
+                    return `<div class="eventModal max-w-sm h-fit bg-white border border-gray-200 rounded-lg shadow  m-4">
+                    <a href="#">
+                        <img src="http://${window.location.host}/images/${$("#managerName").text()}/${e.picture}" alt="" class="rounded-t-md">
+                    </a>
+                    <div class="p-5">
+                        <a href="#">
+                            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">${e.header}</h5>
+                        </a>
+                        <p class="mb-3 font-normal text-gray-700 ">${e.description}</p>
+                        <button id="${e.event_id}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-amber-400 bg-red-600 rounded-lg hover:bg-green-600 transition">
+                            Read more
+                            <svg aria-hidden="true" class="w-4 h-4 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                        </button>
+                    </div>
+                </div>`
+                })
+            )
+            :
+            $("#managerEventsContainer").html(
+            `<div class="font-bold flex items-center">
+                No New Events    
+            </div>`
+            )
+        })
+    }
+    refreshEvents()
+   
     //MultiSelect----------------------------------------------
 
     //Refresh Multi Select
