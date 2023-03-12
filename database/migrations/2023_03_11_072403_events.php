@@ -15,7 +15,7 @@ return new class extends Migration
             $table->increments('event_id');
             $table->string('picture', '300');
             $table->string('header', '300');
-            $table->string('description', '300');
+            $table->longText('description');
             $table->string('total_students', '300');
             $table->string('courses', '300');
             $table->string('created_by', '300');

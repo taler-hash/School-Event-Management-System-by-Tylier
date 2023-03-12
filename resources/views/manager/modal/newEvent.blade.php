@@ -20,12 +20,12 @@
                     <p class=" text-xs text-gray-500 " >SVG, PNG, JPG or GIF (MAX. 800x400px).</p>
                 </div>
                 <div class="">
-                    <label class="block mb-2 text-sm font-medium text-gray-900 ">Text Header</label>
+                    <label class="block mb-2 text-sm font-medium text-gray-900 ">Header</label>
                     <input id="newEventHeader" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Input Header" required>
                 </div>
                 <div class="">
                     <label for="email" class="block mb-2 text-sm font-medium text-gray-900 ">Description</label>
-                    <input type="text" id="newEventDescription" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Input Description" required>
+                    <textarea type="text" id="newEventDescription" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Input Description" required></textarea>
                 </div>
                 <div class="">
                     <div class="lg:flex justify-between">

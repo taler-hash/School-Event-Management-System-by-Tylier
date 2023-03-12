@@ -83,6 +83,7 @@
         </div>
         @include("./manager/modal/newEvent")
         @include("./manager/modal/newAnnouncement")
+        @include("./manager/modal/showInfoEvent")
     </main>
 </body>
 </html>

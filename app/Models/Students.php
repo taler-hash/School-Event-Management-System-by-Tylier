@@ -11,5 +11,5 @@ class Students extends Model
     public $timestamps = false;
     protected $connection = 'mysql';
     protected $table = 'users';
-    protected $fillable = ['student_id','fullname','course','year','email'];
+    protected $fillable = ['student_id','fullname','course','year','email','status'];
 }

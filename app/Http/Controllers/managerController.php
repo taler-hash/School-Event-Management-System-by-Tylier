@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Course;
 use App\Models\Students;
 use App\Models\Event;
+use Storage;
 
 class managerController extends Controller
 {
@@ -15,18 +16,22 @@ class managerController extends Controller
             return redirect('/login');
         }
     }
+
     public function course(){
         $course = Course::select("course")->get();
         return response()->json($course);
     }
+
     public function students(){
-        $students = Students::select('student_id','fullname','course','year')->get();
+        $students = Students::select('student_id','fullname','course','year')->where('status','active')->get();
         return response()->json($students);
     }
+
     public function events(Request $request){
         $events = Event::select('*')->where('created_by', $request->createdBy)->orderBy('event_id', 'desc')->get();
         return response()->json($events);
     }
+
     public function newEvent(Request $request){
         $request->validate([
             'Picture' => '|image |mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -63,15 +68,35 @@ class managerController extends Controller
             $picture->move(public_path('images/'.$request->input('managerName')), $filename);
         return response()->json("success");
     }
+
     public function deleteEvent(Request $request){
         
         $imageDir = public_path('images/'.$request->creator.'/'.$request->image);
         if(file_exists($imageDir))
         {
             Event::where('event_id',$request->eventId)->delete();
+            Storage::disk("vouchers")->delete("{$request->eventId}_$request->creator.json");
             unlink($imageDir);
             return response()->json("success");
         }
         
+    }
+
+    public function storeVouchers(Request $request){
+        if(Storage::disk('vouchers')->exists("{$request->eventId}_$request->creator.json"))
+        {
+            return response()->json("alreadycreated");
+        }
+        else
+        {
+            Storage::disk('vouchers')->put("{$request->eventId}_$request->creator.json", json_encode($request->vouchers));
+            return response()->json("success");
+        }
+        
+    }
+
+    public function fetchVouchers(Request $request){
+        $results = Storage::disk('vouchers')->get("{$request->eventId}_$request->creator.json");
+        return response()->json(json_decode ($results));
     }
 }

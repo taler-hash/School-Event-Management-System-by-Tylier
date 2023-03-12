@@ -29,7 +29,8 @@ class createController extends Controller
             'course' => $request->Course,
             'year' => $request->Year,
             'email' => $request->Email,
-            'password' => $request->Password
+            'password' => $request->Password,
+            'status' => 'active'
         ]);
         return response()->json("sample");
     }

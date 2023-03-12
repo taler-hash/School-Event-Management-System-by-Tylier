@@ -30,13 +30,14 @@ Route::prefix('api')->group(function(){
     Route::post('/login',[loginController::class,'login']);
     Route::post('/create',[createController::class,'create']);
     
-
     //Manager
     Route::get('/course',[managerController::class,'course']);
     Route::get('/students',[managerController::class,'students']);
     Route::post('/newEvent',[managerController::class, 'newEvent']);
     Route::post('/events',[managerController::class,'events']);
     Route::post('/deleteEvent',[managerController::class,'deleteEvent']);
+    Route::post('/storeVouchers',[managerController::class,'storeVouchers']);
+    Route::post('/fetchVouchers',[managerController::class,'fetchVouchers']);
 });
 
 //Admin
