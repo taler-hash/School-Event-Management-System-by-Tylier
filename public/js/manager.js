@@ -277,12 +277,20 @@ $(document).ready(function(){
                 // Loop through the vouchers array and create a div for each voucher
                 for (var i = 0; i < res[0].voucherIn.length; i++) {
                 var voucherDiv = $("<div>").html("Voucher code: " + res[0].voucherIn[i]);
+                voucherDiv.css({
+                    border: "1px solid black",
+                    padding: "10px"
+                  });
                 vouchersDiv.append(voucherDiv);
                 
                 }
+                $("body").css({
+                    display: "flex",
+                    "flex-direction": "column"
+                  });
                 var popupWin = window.open('', '_blank', 'width=300,height=300');
                 popupWin.document.open();
-                popupWin.document.write('<html><head><title>Vouchers</title></head><body>' + vouchersDiv.html() + '</body></html>');
+                popupWin.document.write('<html><head><title>Vouchers</title></head><body style="display: flex; border: 1px solid black; padding: 10px;">' + vouchersDiv.html() + '</body></html>');
                 popupWin.document.close();
                 popupWin.print();
                 console.log(vouchersDiv)
