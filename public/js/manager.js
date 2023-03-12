@@ -51,7 +51,7 @@ $(document).ready(function(){
             },
             error:function(err)
             {
-
+                console.log(err)
             }
         })
         return result
@@ -66,17 +66,21 @@ $(document).ready(function(){
                 data.map(e=>{
                     return `<div class="eventModal max-w-sm h-fit bg-white border border-gray-200 rounded-lg shadow  m-4">
                     <a href="#">
-                        <img src="http://${window.location.host}/images/${$("#managerName").text()}/${e.picture}" alt="" class="rounded-t-md">
+                        <img src="http://${window.location.host}/images/${$("#managerName").text()}/${e.picture}" alt="Event Picture" class="rounded-t-md">
                     </a>
                     <div class="p-5">
                         <a href="#">
                             <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">${e.header}</h5>
                         </a>
                         <p class="mb-3 font-normal text-gray-700 ">${e.description}</p>
-                        <button id="${e.event_id}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-amber-400 bg-red-600 rounded-lg hover:bg-green-600 transition">
-                            Read more
-                            <svg aria-hidden="true" class="w-4 h-4 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                        <div class="w-full flex justify-between">
+                        <button id="showInfoButton"  class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-amber-400 bg-lime-600 rounded-lg hover:bg-green-600 transition">
+                            Show Info
                         </button>
+                        <button id="deleteEvent" data-eventid="${e.event_id}" data-img="${e.picture}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-amber-400 bg-red-600 rounded-lg hover:bg-green-600 transition">
+                            Delete
+                        </button>
+                        </div>
                     </div>
                 </div>`
                 })
@@ -90,6 +94,30 @@ $(document).ready(function(){
         })
     }
     refreshEvents()
+    //EVENTS Functions-----------------------------------------
+
+    //Delete Event
+    $(document).on('click',"#deleteEvent", function(){
+        $.ajax({
+            headers:header,
+            url:'/api/deleteEvent',
+            data:{
+                creator:$("#managerName").text(),
+                eventId:$(this).data('eventid'),
+                image:$(this).data('img')
+            },
+            method:'post',
+            success:function(res)
+            {
+                refreshEvents()
+                toastr.success("Successfully Deleted","Success")
+            },
+            error:function(err)
+            {
+                console.log(err)
+            }
+        })
+    })
    
     //MultiSelect----------------------------------------------
 
@@ -243,7 +271,6 @@ $(document).ready(function(){
         e.preventDefault()
         $(".newEventErrors ").remove()
         let filteredCourses = results.filter((e,i) => { if(!e.isDefault)return e.course})
-        console.log($("#newEventTotalStudents").text())
         let form = new FormData()
         form.append('Picture', $("#newEventPicture")[0].files[0])
         form.append('Header',$("#newEventHeader").val())
@@ -328,5 +355,5 @@ $(document).ready(function(){
             showOption = !showOption
         }
     })
-
+    
 })

@@ -63,4 +63,15 @@ class managerController extends Controller
             $picture->move(public_path('images/'.$request->input('managerName')), $filename);
         return response()->json("success");
     }
+    public function deleteEvent(Request $request){
+        
+        $imageDir = public_path('images/'.$request->creator.'/'.$request->image);
+        if(file_exists($imageDir))
+        {
+            Event::where('event_id',$request->eventId)->delete();
+            unlink($imageDir);
+            return response()->json("success");
+        }
+        
+    }
 }

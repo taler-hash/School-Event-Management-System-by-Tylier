@@ -29,12 +29,14 @@ Route::get('/', function () {
 Route::prefix('api')->group(function(){
     Route::post('/login',[loginController::class,'login']);
     Route::post('/create',[createController::class,'create']);
-    Route::post('/newEvent',[managerController::class, 'newEvent']);
+    
 
     //Manager
     Route::get('/course',[managerController::class,'course']);
     Route::get('/students',[managerController::class,'students']);
+    Route::post('/newEvent',[managerController::class, 'newEvent']);
     Route::post('/events',[managerController::class,'events']);
+    Route::post('/deleteEvent',[managerController::class,'deleteEvent']);
 });
 
 //Admin
