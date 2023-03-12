@@ -29,7 +29,8 @@ class loginController extends Controller
 
             $checkTableusers = DB::table('users')
             ->where('student_id', $request->Username)
-            ->where('password', $request->Password)->get();
+            ->where('password', $request->Password)
+            ->where('status', 'active')->get();
 
             if($checkTablemanager->isNotEmpty() && $checkTableadmin->pluck('type')->implode(', ') === 'manager')
             {

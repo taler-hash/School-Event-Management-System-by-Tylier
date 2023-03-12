@@ -270,7 +270,17 @@ $(document).ready(function(){
             method:'post',
             success:function(res)
             {
-                console.log(res)
+                console.log(res[0].voucherIn)
+                // Create a new div to hold the vouchers
+                var vouchersDiv = $("<div>");
+
+                // Loop through the vouchers array and create a div for each voucher
+                for (var i = 0; i < res[0].voucherIn.length; i++) {
+                voucherDiv = $("<div>").html("Voucher code: " + voucherIn[i]);
+                vouchersDiv.append(voucherDiv);
+                
+                }
+                
             },
             error:function(err)
             {
