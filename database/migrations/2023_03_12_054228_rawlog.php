@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('event_id', '300');
             $table->string('student_id', '300');
             $table->string('entrance_voucher', '300');
-            $table->string('exit_voucher', '300');
+            $table->string('exit_voucher', '300')->nullable();
         });
     }
 

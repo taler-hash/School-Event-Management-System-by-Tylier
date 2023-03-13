@@ -5,6 +5,7 @@ use App\Http\Controllers\loginController;
 use App\Http\Controllers\createController;
 use App\Http\Controllers\adminController;
 use App\Http\Controllers\managerController;
+use App\Http\Controllers\studentController; 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -31,17 +32,25 @@ Route::prefix('api')->group(function(){
     Route::post('/create',[createController::class,'create']);
     
     //Manager
-    Route::get('/course',[managerController::class,'course']);
-    Route::get('/students',[managerController::class,'students']);
-    //Events
-        Route::post('/events',[managerController::class,'events']);
-        Route::post('/newEvent',[managerController::class, 'newEvent']);
-        Route::post('/deleteEvent',[managerController::class,'deleteEvent']);
-        Route::post('/storeVouchers',[managerController::class,'storeVouchers']);
-        Route::post('/fetchVouchers',[managerController::class,'fetchVouchers']);
-    //Announcement
-        Route::post('/announcement',[managerController::class,'announcement']);
-        Route::post('/newAnnouncement',[managerController::class,'newAnnouncement']);
+        Route::get('/course',[managerController::class,'course']);
+        Route::get('/students',[managerController::class,'students']);
+
+        //Events
+            Route::post('/events',[managerController::class,'events']);
+            Route::post('/newEvent',[managerController::class, 'newEvent']);
+            Route::post('/deleteEvent',[managerController::class,'deleteEvent']);
+            Route::post('/storeVouchers',[managerController::class,'storeVouchers']);
+            Route::post('/fetchVouchers',[managerController::class,'fetchVouchers']);
+
+        //Announcement
+            Route::post('/announcement',[managerController::class,'announcement']);
+            Route::post('/newAnnouncement',[managerController::class,'newAnnouncement']);
+            Route::post('/deleteAnnouncement',[managerController::class,'deleteAnnouncement']);
+    
+    //Student
+        Route::get('/students/events',[studentController::class,'fetchEvents']);
+        Route::post('/students/entranceVoucher',[studentController::class,'entranceVoucher']);
+    
 });
 
 //Admin

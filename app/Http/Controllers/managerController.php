@@ -129,6 +129,7 @@ class managerController extends Controller
     }
 
     public function deleteAnnouncement(Request $request){
-        
+        Announcement::where('announcement_id',$request->announcementId)->delete();
+        return response()->json("success");
     }
 }

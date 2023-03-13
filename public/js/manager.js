@@ -273,6 +273,31 @@ $(document).ready(function(){
         })
     })
 
+    //Delete Announcement
+    $(document).on("click","#deleteAnnouncement",function(){
+        loadingButtonDelete($(this), 'Delete')
+        $.ajax({
+            headers:header,
+            url:'/api/deleteAnnouncement',
+            data:
+            {
+                creator:$("#managerName").text(),
+                announcementId:$(this).data('announcementid'),
+            },
+            method:'post',
+            success:function(res)
+            {
+                refreshAnnouncement()
+                toastr.success("Successfully Deleted", "Success")
+            },
+            error:function(err)
+            {
+                console.log(res)
+            }
+        })
+        
+    })
+
     //Create Voucher
     $(document).on('click','#showInfoCreateVoucher', function() { 
         let vouchers = []
@@ -346,60 +371,68 @@ $(document).ready(function(){
                     toastr.info("Generate A voucher first","info")
                 }   
                 else
-                {
-                    // Create a new div to hold the vouchers
-                var vouchersDiv = $("<div>");
+                {       
+                    if(res.length === undefined)
+                    {
+                        toastr.info("No student are registered")
+                    }
+                    else
+                    {
+                        // Create a new div to hold the vouchers
+                        var vouchersDiv = $("<div>");
 
-                // Loop through the vouchers array and create a div for each voucher
-                for (var i = 0; i < res[0].voucherIn.length; i++) {
-                var voucherDivIn = $(`<div style="padding:10px; border: 1px solid; margin-right: 0.25rem;margin-top: 0.25rem;height: min-content;page-break-inside: avoid;">`)
-                    .html(
-                        `<div style="text-align: center;font-size:0.5rem;line-height:1rem">Entrance Voucher</div>
-                        <div style="text-align: center;font-size: 1.5rem;line-height: 2rem; font-weight: 900">
-                            ${res[0].voucherIn[i].voucher}
-                        </div>
-                        <div style="text-align: center;font-size: 0.875rem;line-height: 1.75rem;">
-                            ${$("#showInfoHeader").val()}
-                        </div>
-                        <div style="text-align: center;font-size: 0.600rem;line-height: 0.5rem;">
-                            ${$("#showInfoDate").val()}
-                        </div>`);
-                vouchersDiv.append(voucherDivIn);
-                }
+                        // Loop through the vouchers array and create a div for each voucher
+                        for (var i = 0; i < res[0].voucherIn.length; i++) {
+                        var voucherDivIn = $(`<div style="padding:10px; border: 1px solid; margin-right: 0.25rem;margin-top: 0.25rem;height: min-content;page-break-inside: avoid;">`)
+                            .html(
+                                `<div style="text-align: center;font-size:0.5rem;line-height:1rem">Entrance Voucher</div>
+                                <div style="text-align: center;font-size: 1.5rem;line-height: 2rem; font-weight: 900">
+                                    ${res[0].voucherIn[i].voucher}
+                                </div>
+                                <div style="text-align: center;font-size: 0.875rem;line-height: 1.75rem;">
+                                    ${$("#showInfoHeader").val()}
+                                </div>
+                                <div style="text-align: center;font-size: 0.600rem;line-height: 0.5rem;">
+                                    ${$("#showInfoDate").val()}
+                                </div>`);
+                        vouchersDiv.append(voucherDivIn);
+                        }
 
-                for (var i = 0; i < res[0].voucherOut.length; i++) {
-                    var voucherDivOut = $(`<div style="padding:10px; border: 1px solid; margin-right: 0.25rem;margin-top: 0.25rem;height: min-content;page-break-inside: avoid;">`)
-                    .html(
-                        `<div style="text-align: center;font-size:0.5rem;line-height:1rem">Exit Voucher</div>
-                        <div style="text-align: center;font-size: 1.5rem;line-height: 2rem; font-weight: 900">
-                            ${res[0].voucherOut[i].voucher}
-                        </div>
-                        <div style="text-align: center;font-size: 0.875rem;line-height: 1.75rem;">
-                            ${$("#showInfoHeader").val()}
-                        </div>
-                        <div style="text-align: center;font-size: 0.600rem;line-height: 0.5rem;">
-                            ${$("#showInfoDate").val()}
-                        </div>`);
-                    vouchersDiv.append(voucherDivOut);
+                        for (var i = 0; i < res[0].voucherOut.length; i++) {
+                            var voucherDivOut = $(`<div style="padding:10px; border: 1px solid; margin-right: 0.25rem;margin-top: 0.25rem;height: min-content;page-break-inside: avoid;">`)
+                            .html(
+                                `<div style="text-align: center;font-size:0.5rem;line-height:1rem">Exit Voucher</div>
+                                <div style="text-align: center;font-size: 1.5rem;line-height: 2rem; font-weight: 900">
+                                    ${res[0].voucherOut[i].voucher}
+                                </div>
+                                <div style="text-align: center;font-size: 0.875rem;line-height: 1.75rem;">
+                                    ${$("#showInfoHeader").val()}
+                                </div>
+                                <div style="text-align: center;font-size: 0.600rem;line-height: 0.5rem;">
+                                    ${$("#showInfoDate").val()}
+                                </div>`);
+                            vouchersDiv.append(voucherDivOut);
+                            
+                        }
+
+                        vouchersDiv.children().last().css('page-break-after', 'auto');
+                        var popupWin = window.open('', '_blank', 'fullscreen=yes');
+                        popupWin.document.open();
+                        popupWin.document.write(
+                            `<html>
+                                <head>
+                                    <title>
+                                        ${$("#showInfoHeader").val()}  / ${$("#showInfoDate").val()} ${$("#showInfoFrom").text()} - ${$("#showInfoTo").text()}
+                                    </title>
+                                </head>
+                                <body style="display: flex;flex-wrap: wrap;height:min-content;justify-content: center">
+                                    ${vouchersDiv.html()}
+                                </body>
+                            </html>`);
+                        popupWin.document.close();
+                        popupWin.print();
+                    }
                     
-                }
-
-                vouchersDiv.children().last().css('page-break-after', 'auto');
-                var popupWin = window.open('', '_blank', 'fullscreen=yes');
-                popupWin.document.open();
-                popupWin.document.write(
-                    `<html>
-                        <head>
-                            <title>
-                                ${$("#showInfoHeader").val()}  / ${$("#showInfoDate").val()} ${$("#showInfoFrom").text()} - ${$("#showInfoTo").text()}
-                            </title>
-                        </head>
-                        <body style="display: flex;flex-wrap: wrap;height:min-content;justify-content: center">
-                            ${vouchersDiv.html()}
-                        </body>
-                    </html>`);
-                popupWin.document.close();
-                popupWin.print();
                 }
                 
             },
@@ -641,7 +674,6 @@ $(document).ready(function(){
         loadingButton("newAnnouncement", "Create")
         let filteredCourses = results.filter((e,i) => { if(!e.isDefault)return e.course})
             filteredCourses = filteredCourses.map(e=>{return e.course})
-        console.log(filteredCourses)
         $.ajax({
             headers:header,
             url:'/api/newAnnouncement',
