@@ -4,6 +4,7 @@ $(document).ready(function(){
     let results = []
     let students = []
     let events = []
+    let announcement = []
     let total = 0
     //Fetch Course
     function fetchCourse()
@@ -34,6 +35,7 @@ $(document).ready(function(){
             }
         })
     }
+
     //Fetch Events
     async function fetchEvents(){
         let  result = await $.ajax({
@@ -56,7 +58,65 @@ $(document).ready(function(){
         })
         return result
     }
+    
+    
+    //Fetch Announcement
+    async function fetchAnnouncement(){
+        let result = await $.ajax({
+            headers:header,
+            url:'/api/announcement',
+            method:'post',
+            data:
+            {
+                createdBy:$("#managerName").text()
+            },
+            success:function(res)
+            {
+                announcement = res.map(e=>( {...e, courses:e.courses.split(",")}))
+                return res
+            },
+            error:function(err)
+            {
+                console.log(err)
+            }
+            
+        })
+        return result
+    }
+
     $.when(fetchCourse(), fetchStudents())
+
+    //Refresh Announcement
+    function refreshAnnouncement(){
+        fetchAnnouncement().then(()=>{
+
+            announcement.length !== 0 
+            ?
+                $("#managerAnnouncementContainer").html(
+                    announcement.map(e=>{
+                        return `<div class="w-full h-fit p-6 m-4 bg-white border border-gray-200 rounded-lg shadow">
+                        <a href="#">
+                            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 ">
+                                ${e.header}
+                            </h5>
+                        </a>
+                        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+                            ${e.description}
+                        </p>
+                        <button id="deleteAnnouncement" data-announcementid="${e.announcement_id}"  class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-amber-400 bg-red-600 rounded-lg hover:bg-green-600 transition">
+                            Delete
+                        </button>
+                    </div>`
+                    })
+                )
+            :
+            $("#managerAnnouncementContainer").html(
+                `<div class="font-bold flex items-center">
+                    No New Announcement    
+                </div>`)
+        })
+    }
+    refreshAnnouncement()
     //RefreshEvents
     function refreshEvents()
     {
@@ -70,8 +130,10 @@ $(document).ready(function(){
                     </a>
                     <div class="p-5">
                         <a href="#">
-                            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">${e.header}</h5>
+                            <h5 class=" text-2xl font-bold tracking-tight text-gray-900">${e.header}</h5>
                         </a>
+                        <p class="text-gray-500 text-xs italic">Created: ${e.created_date}</p>
+                        <p class="text-gray-500 text-xs mb-2 italic">Students: ${e.total_students}</p>
                         <p class="mb-3 font-normal text-gray-700 ">${e.description}</p>
                         <div class="w-full flex justify-between">
                         <button id="showInfoButton" data-eventid="${e.event_id}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-amber-400 bg-lime-600 rounded-lg hover:bg-green-600 transition">
@@ -373,7 +435,7 @@ $(document).ready(function(){
         {
             $(".choiceswrapperNewEvent").html(`<p class=" text-center flex items-center text-gray-400">Please Select Course</p>`)
         }
-        $("#newEventTotalStudents").text(total)
+        $("#newEventTotalStudents, #newAnnouncementTotalStudents").text(total)
     }
 
     //Click Results in Multi Select
@@ -554,6 +616,7 @@ $(document).ready(function(){
     //New Announcement Modal
     $(document).on('click','#newAnnouncementButton', function(){
         results = courses
+        RefreshMultiSelectNewEvent()
         $("#newAnnouncementModal").removeClass('opacity-0').removeClass('invisible')
         $("#newAnnouncementModalContent").removeClass('scale-0')
     })
@@ -567,9 +630,40 @@ $(document).ready(function(){
             modal.addClass("invisible")
             MultiSelectshowNewEvent = true
             results = courses
+            total = 0
             RefreshMultiSelectNewEvent()
             closeMultiSelect()
         }, 200)
+    })
+
+    //New Announcement Button Submit
+    $(document).on('click','#newAnnouncementButtonsubmit',function(){
+        loadingButton("newAnnouncement", "Create")
+        let filteredCourses = results.filter((e,i) => { if(!e.isDefault)return e.course})
+            filteredCourses = filteredCourses.map(e=>{return e.course})
+        console.log(filteredCourses)
+        $.ajax({
+            headers:header,
+            url:'/api/newAnnouncement',
+            data:
+            {
+                Header:$("#newAnnouncmentHeader").val(),
+                Description:$("#newAnnouncementDescription").val(),
+                Creator:$("#managerName").text(),
+                courses:filteredCourses,
+            },
+            method:'post',
+            success:function(res)
+            {
+                toastr.success("Created New Announcement ", "Success")
+                refreshAnnouncement()
+                $("#newAnnouncementClose").trigger("click")
+            },
+            error:function(err)
+            {
+                console.log(err)
+            }
+        })
     })
 
     //Show Option---------------------------------------------------------

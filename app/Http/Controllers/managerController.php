@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Course;
 use App\Models\Students;
 use App\Models\Event;
+use App\Models\Announcement;
 use Storage;
+Use \Carbon\Carbon;
 
 class managerController extends Controller
 {
@@ -27,6 +29,7 @@ class managerController extends Controller
         return response()->json($students);
     }
 
+    //Events
     public function events(Request $request){
         $events = Event::select('*')->where('created_by', $request->createdBy)->orderBy('event_id', 'desc')->get();
         return response()->json($events);
@@ -64,6 +67,7 @@ class managerController extends Controller
             $event->start_date = $request->input('Date');
             $event->start_time = $request->input('StartTime');
             $event->end_time = $request->input('EndTime');
+            $event->created_Date = Carbon::now()->format('Y-m-d');
             $event->save();
             $picture->move(public_path('images/'.$request->input('managerName')), $filename);
         return response()->json("success");
@@ -105,5 +109,26 @@ class managerController extends Controller
             return response()->json(json_decode ($results));
         }
        
+    }
+
+    //Announcement
+    public function announcement(Request $request){
+        $announcement = Announcement::select('*')->where('created_by', $request->createdBy)->orderBy('announcement_id', 'desc')->get();
+        return response()->json($announcement);
+    }
+
+    public function newAnnouncement(Request $request){
+        $announcement = new Announcement();
+            $announcement->header = $request->Header;
+            $announcement->description = $request->Description;
+            $announcement->created_by = $request->Creator;
+            $announcement->courses = collect($request->courses)->implode(",");
+            $announcement->date_created = Carbon::now()->format('Y-m-d');
+            $announcement->save();
+            return response()->json("success");
+    }
+
+    public function deleteAnnouncement(Request $request){
+        
     }
 }

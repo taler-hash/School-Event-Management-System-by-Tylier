@@ -33,11 +33,15 @@ Route::prefix('api')->group(function(){
     //Manager
     Route::get('/course',[managerController::class,'course']);
     Route::get('/students',[managerController::class,'students']);
-    Route::post('/newEvent',[managerController::class, 'newEvent']);
-    Route::post('/events',[managerController::class,'events']);
-    Route::post('/deleteEvent',[managerController::class,'deleteEvent']);
-    Route::post('/storeVouchers',[managerController::class,'storeVouchers']);
-    Route::post('/fetchVouchers',[managerController::class,'fetchVouchers']);
+    //Events
+        Route::post('/events',[managerController::class,'events']);
+        Route::post('/newEvent',[managerController::class, 'newEvent']);
+        Route::post('/deleteEvent',[managerController::class,'deleteEvent']);
+        Route::post('/storeVouchers',[managerController::class,'storeVouchers']);
+        Route::post('/fetchVouchers',[managerController::class,'fetchVouchers']);
+    //Announcement
+        Route::post('/announcement',[managerController::class,'announcement']);
+        Route::post('/newAnnouncement',[managerController::class,'newAnnouncement']);
 });
 
 //Admin
