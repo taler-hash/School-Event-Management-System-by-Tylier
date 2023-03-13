@@ -44,7 +44,7 @@
                         </div>
                         <div class="h-[10%] flex justify-between items-center">
                             <button id="showInfoCreateVoucher" class="text-white h-fit bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                                Create Voucher
+                                Generate Voucher
                             </button>
                            <button id="showInfoPrintVoucher" class="text-white h-fit bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                                 Print Voucher

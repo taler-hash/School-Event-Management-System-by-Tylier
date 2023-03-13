@@ -96,7 +96,14 @@ class managerController extends Controller
     }
 
     public function fetchVouchers(Request $request){
-        $results = Storage::disk('vouchers')->get("{$request->eventId}_$request->creator.json");
-        return response()->json(json_decode ($results));
+        if(Storage::disk('vouchers')->missing("{$request->eventId}_$request->creator.json"))
+        {
+            return response()->json("missing");
+        }
+        {
+            $results = Storage::disk('vouchers')->get("{$request->eventId}_$request->creator.json");
+            return response()->json(json_decode ($results));
+        }
+       
     }
 }

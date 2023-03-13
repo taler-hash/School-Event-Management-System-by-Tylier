@@ -96,6 +96,14 @@ $(document).ready(function(){
     refreshEvents()
     //EVENTS Functions-----------------------------------------
 
+    //Convert Time Function
+    function convertTime(data)
+        {
+            let time = data.split(':');// here the time is like "16:14"
+            let meridiemTime = time[0] >= 12 && (time[0]-12 || 12) + ':' + time[1] + ' PM' || (Number(time[0]) || 12) + ':' + time[1] + ' AM';
+            return meridiemTime
+        }
+
     //loadingButton Show Info
     function loadingButtonShowInfo(buttonType, buttonLabel)
         {
@@ -125,6 +133,7 @@ $(document).ready(function(){
 
     //Show Info Event Modal
     $(document).on('click','#showInfoButton',function(){
+        
         $("#showInfoEvent").removeClass('opacity-0').removeClass('invisible')
         $("#showInfoModalContent").removeClass('scale-0')
         let filteredEvent = events.filter(e=> {return e.event_id === $(this).data('eventid')})
@@ -132,8 +141,8 @@ $(document).ready(function(){
         $("#showInfoHeader").val(filteredEvent[0].header)
         $("#showInfoDescription").val(filteredEvent[0].description)
         $("#showInfoDate").val(filteredEvent[0].start_date)
-        $("#showInfoFrom").text(filteredEvent[0].start_time)
-        $("#showInfoTo").text(filteredEvent[0].end_time)
+        $("#showInfoFrom").text(convertTime(filteredEvent[0].start_time))
+        $("#showInfoTo").text(convertTime(filteredEvent[0].end_time))
         $("#showInfoCourses").html(filteredEvent[0].courses.map(e=>{
             return `<button class="choicesNewEvent px-2 p-1 border rounded bg-white  mr-0.5 my-0.5 cursor-pointer transition hover:bg-red-600 hover:text-white">${e}</button>`
         }))
@@ -156,8 +165,8 @@ $(document).ready(function(){
     function loadingButtonDelete(buttonType, buttonLabel)
         {
 
-            $(`#${buttonType}`).attr("disabled", "true")
-            $(`#${buttonType}`).html(`
+            buttonType.attr("disabled", "true")
+            buttonType.html(`
             <div class="">
                 <div role="status">
                     <svg aria-hidden="true" class="inline w-6 h-6 text-transparent animate-spin dark:text-gray-600 fill-white" viewBox="0 0 100 101" xmlns="http://www.w3.org/2000/svg">
@@ -167,21 +176,20 @@ $(document).ready(function(){
                 </div>
             </div>
             `)
-            $(`.${buttonType}Errors`).remove()
             $(document).ajaxSuccess(function(){
-                $(`#${buttonType}`).removeAttr("disabled")
-                $(`#${buttonType}`).html(`<p>${buttonLabel}</p>`)
+                buttonType.removeAttr("disabled")
+                buttonType.html(`<p>${buttonLabel}</p>`)
                 
             })
             $(document).ajaxError(function(){
-                $(`#${buttonType}`).removeAttr("disabled")
-                $(`#${buttonType}`).html(`<p>${buttonLabel}</p>`)
+                buttonType.removeAttr("disabled")
+                buttonType.html(`<p>${buttonLabel}</p>`)
             })
     }
 
     //Delete Event
     $(document).on('click',"#deleteEvent", function(){
-        loadingButtonDelete('deleteEvent', 'Delete')
+        loadingButtonDelete($(this), 'Delete')
         $.ajax({
             headers:header,
             url:'/api/deleteEvent',
@@ -221,13 +229,14 @@ $(document).ready(function(){
         }
         for(let i = 0; i < $("#showInfoTotal").text(); i++ )
         {
-            voucherIn.push(`${$("#showInfoEventId").val()}-${makeid(5)}`)
+            voucherIn.push({voucher:`${$("#showInfoEventId").val()}-${makeid(5)}`, isUsed:false})
         }
         for(let i = 0; i < $("#showInfoTotal").text(); i++ )
         {
-            voucherOut.push(`${$("#showInfoEventId").val()}-${makeid(5)}`)
+            voucherOut.push({voucher:`${$("#showInfoEventId").val()}-${makeid(5)}`, isUsed:false})
         }
         vouchers.push({voucherIn:voucherIn, voucherOut:voucherOut})
+        console.log(vouchers)
         loadingButtonShowInfo("CreateVoucher", "Create Voucher")
         $.ajax({
             headers:header,
@@ -270,35 +279,71 @@ $(document).ready(function(){
             method:'post',
             success:function(res)
             {
-                console.log(res[0].voucherIn)
-                // Create a new div to hold the vouchers
+                if(res == "missing")
+                {
+                    toastr.info("Generate A voucher first","info")
+                }   
+                else
+                {
+                    // Create a new div to hold the vouchers
                 var vouchersDiv = $("<div>");
 
                 // Loop through the vouchers array and create a div for each voucher
                 for (var i = 0; i < res[0].voucherIn.length; i++) {
-                var voucherDiv = $("<div>").html("Voucher code: " + res[0].voucherIn[i]);
-                voucherDiv.css({
-                    border: "1px solid black",
-                    padding: "10px"
-                  });
-                vouchersDiv.append(voucherDiv);
-                
+                var voucherDivIn = $(`<div style="padding:10px; border: 1px solid; margin-right: 0.25rem;margin-top: 0.25rem;height: min-content;page-break-inside: avoid;">`)
+                    .html(
+                        `<div style="text-align: center;font-size:0.5rem;line-height:1rem">Entrance Voucher</div>
+                        <div style="text-align: center;font-size: 1.5rem;line-height: 2rem; font-weight: 900">
+                            ${res[0].voucherIn[i].voucher}
+                        </div>
+                        <div style="text-align: center;font-size: 0.875rem;line-height: 1.75rem;">
+                            ${$("#showInfoHeader").val()}
+                        </div>
+                        <div style="text-align: center;font-size: 0.600rem;line-height: 0.5rem;">
+                            ${$("#showInfoDate").val()}
+                        </div>`);
+                vouchersDiv.append(voucherDivIn);
                 }
-                $("body").css({
-                    display: "flex",
-                    "flex-direction": "column"
-                  });
-                var popupWin = window.open('', '_blank', 'width=300,height=300');
+
+                for (var i = 0; i < res[0].voucherOut.length; i++) {
+                    var voucherDivOut = $(`<div style="padding:10px; border: 1px solid; margin-right: 0.25rem;margin-top: 0.25rem;height: min-content;page-break-inside: avoid;">`)
+                    .html(
+                        `<div style="text-align: center;font-size:0.5rem;line-height:1rem">Exit Voucher</div>
+                        <div style="text-align: center;font-size: 1.5rem;line-height: 2rem; font-weight: 900">
+                            ${res[0].voucherOut[i].voucher}
+                        </div>
+                        <div style="text-align: center;font-size: 0.875rem;line-height: 1.75rem;">
+                            ${$("#showInfoHeader").val()}
+                        </div>
+                        <div style="text-align: center;font-size: 0.600rem;line-height: 0.5rem;">
+                            ${$("#showInfoDate").val()}
+                        </div>`);
+                    vouchersDiv.append(voucherDivOut);
+                    
+                }
+
+                vouchersDiv.children().last().css('page-break-after', 'auto');
+                var popupWin = window.open('', '_blank', 'fullscreen=yes');
                 popupWin.document.open();
-                popupWin.document.write('<html><head><title>Vouchers</title></head><body style="display: flex; border: 1px solid black; padding: 10px;">' + vouchersDiv.html() + '</body></html>');
+                popupWin.document.write(
+                    `<html>
+                        <head>
+                            <title>
+                                ${$("#showInfoHeader").val()}  / ${$("#showInfoDate").val()} ${$("#showInfoFrom").text()} - ${$("#showInfoTo").text()}
+                            </title>
+                        </head>
+                        <body style="display: flex;flex-wrap: wrap;height:min-content;justify-content: center">
+                            ${vouchersDiv.html()}
+                        </body>
+                    </html>`);
                 popupWin.document.close();
                 popupWin.print();
-                console.log(vouchersDiv)
+                }
                 
             },
             error:function(err)
             {
-
+                console.log(err)
             }
         })
     })
