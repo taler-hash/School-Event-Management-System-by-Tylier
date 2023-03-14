@@ -84,8 +84,6 @@ $(document).ready(function(){
         return result
     }
 
-    $.when(fetchCourse(), fetchStudents())
-
     //Refresh Announcement
     function refreshAnnouncement(){
         fetchAnnouncement().then(()=>{
@@ -116,7 +114,7 @@ $(document).ready(function(){
                 </div>`)
         })
     }
-    refreshAnnouncement()
+
     //RefreshEvents
     function refreshEvents()
     {
@@ -155,7 +153,7 @@ $(document).ready(function(){
             )
         })
     }
-    refreshEvents()
+    $.when(refreshEvents(), refreshAnnouncement(),fetchCourse(),fetchStudents())
     //EVENTS Functions-----------------------------------------
 
     //Convert Time Function
@@ -165,6 +163,33 @@ $(document).ready(function(){
             let meridiemTime = time[0] >= 12 && (time[0]-12 || 12) + ':' + time[1] + ' PM' || (Number(time[0]) || 12) + ':' + time[1] + ' AM';
             return meridiemTime
         }
+
+    //SHOW INFO Function ---------------------------------------
+
+    //Fetch Vouched Students
+    function fetchVouchedStudents(){
+        $.ajax({
+            headers:header,
+            url:'/api/students/fetchVouchedStudents',
+            method:'post',
+            data:
+            {
+                rows:10,
+                searchString:""
+            },
+            success:function(res)
+            {
+                console.log(res)
+            },
+            error:function(err)
+            {
+                console.log(err)
+            }
+        })
+        $(".showInfoTable").html(
+            
+        )
+    }
 
     //loadingButton Show Info
     function loadingButtonShowInfo(buttonType, buttonLabel)
@@ -195,7 +220,6 @@ $(document).ready(function(){
 
     //Show Info Event Modal
     $(document).on('click','#showInfoButton',function(){
-        
         $("#showInfoEvent").removeClass('opacity-0').removeClass('invisible')
         $("#showInfoModalContent").removeClass('scale-0')
         let filteredEvent = events.filter(e=> {return e.event_id === $(this).data('eventid')})

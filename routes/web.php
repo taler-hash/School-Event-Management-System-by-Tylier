@@ -49,7 +49,9 @@ Route::prefix('api')->group(function(){
     
     //Student
         Route::get('/students/events',[studentController::class,'fetchEvents']);
+        Route::post('/students/announcements',[studentController::class,'fetchAnnouncements']);
         Route::post('/students/entranceVoucher',[studentController::class,'entranceVoucher']);
+        Route::post('/students/exitVoucher',[studentController::class,'exitVoucher']);
     
 });
 

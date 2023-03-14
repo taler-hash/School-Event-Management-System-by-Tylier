@@ -111,6 +111,8 @@ class managerController extends Controller
        
     }
 
+
+
     //Announcement
     public function announcement(Request $request){
         $announcement = Announcement::select('*')->where('created_by', $request->createdBy)->orderBy('announcement_id', 'desc')->get();
@@ -132,4 +134,5 @@ class managerController extends Controller
         Announcement::where('announcement_id',$request->announcementId)->delete();
         return response()->json("success");
     }
+
 }
