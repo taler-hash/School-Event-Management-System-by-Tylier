@@ -8,6 +8,7 @@ use App\Models\Students;
 use App\Models\Event;
 use App\Models\Announcement;
 use Storage;
+use App\Models\RawLog;
 Use \Carbon\Carbon;
 
 class managerController extends Controller
@@ -79,6 +80,7 @@ class managerController extends Controller
         if(file_exists($imageDir))
         {
             Event::where('event_id',$request->eventId)->delete();
+            RawLog::where('event_id', $request->eventId)->delete();
             Storage::disk("vouchers")->delete("{$request->eventId}_$request->creator.json");
             unlink($imageDir);
             return response()->json("success");
@@ -111,7 +113,12 @@ class managerController extends Controller
        
     }
 
-
+    public function vouchedStudents(Request $request){
+        
+        $data = RawLog::with("students:student_id,fullname,course,year")
+        ->where('event_id',$request->eventId)->paginate(10);
+        return response()->json($data);
+    }
 
     //Announcement
     public function announcement(Request $request){

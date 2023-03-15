@@ -57,7 +57,7 @@
                                 <div class="w-full flex justify-end mb-1">
                                     <div class="mr-2 flex space-x-2 items-center">
                                         <label for="countries" class="block mb-2 text-sm font-medium text-gray-900">Entries</label>
-                                        <select id="countries" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
+                                        <select id="showInfoTableEntries" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
                                             <option value="10">10</option>
                                             <option value="25">25</option>
                                             <option value="50">50</option>
@@ -100,13 +100,12 @@
                                         </tr>
                                     </thead>
                                     <tbody class="showInfoTable">
-                                        <tr>
-                                            <td>
-                                                samle
-                                            </td>
-                                        </tr>
+                                        
                                     </tbody>
                                 </table>
+                                <div class="paginationContainer flex w-full justify-end mt-2">
+
+                                </div>
                             </div>
 
                         </div>

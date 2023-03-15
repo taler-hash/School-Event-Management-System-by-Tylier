@@ -41,6 +41,7 @@ Route::prefix('api')->group(function(){
             Route::post('/deleteEvent',[managerController::class,'deleteEvent']);
             Route::post('/storeVouchers',[managerController::class,'storeVouchers']);
             Route::post('/fetchVouchers',[managerController::class,'fetchVouchers']);
+            Route::get('/fetchVouchedStudents',[managerController::class,'vouchedStudents']);
 
         //Announcement
             Route::post('/announcement',[managerController::class,'announcement']);
@@ -52,7 +53,9 @@ Route::prefix('api')->group(function(){
         Route::post('/students/announcements',[studentController::class,'fetchAnnouncements']);
         Route::post('/students/entranceVoucher',[studentController::class,'entranceVoucher']);
         Route::post('/students/exitVoucher',[studentController::class,'exitVoucher']);
-    
+
+    //Admin
+    Route::get('/admin/fetchAll',[adminController::class,'fetchAll']);
 });
 
 //Admin

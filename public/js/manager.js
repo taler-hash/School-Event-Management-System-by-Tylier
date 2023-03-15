@@ -5,6 +5,9 @@ $(document).ready(function(){
     let students = []
     let events = []
     let announcement = []
+    let vouchedStudents = []
+    let eventId = ""
+    rows = 10
     let total = 0
     //Fetch Course
     function fetchCourse()
@@ -166,30 +169,6 @@ $(document).ready(function(){
 
     //SHOW INFO Function ---------------------------------------
 
-    //Fetch Vouched Students
-    function fetchVouchedStudents(){
-        $.ajax({
-            headers:header,
-            url:'/api/students/fetchVouchedStudents',
-            method:'post',
-            data:
-            {
-                rows:10,
-                searchString:""
-            },
-            success:function(res)
-            {
-                console.log(res)
-            },
-            error:function(err)
-            {
-                console.log(err)
-            }
-        })
-        $(".showInfoTable").html(
-            
-        )
-    }
 
     //loadingButton Show Info
     function loadingButtonShowInfo(buttonType, buttonLabel)
@@ -220,9 +199,12 @@ $(document).ready(function(){
 
     //Show Info Event Modal
     $(document).on('click','#showInfoButton',function(){
+
+        let filteredEvent = events.filter(e=> {return e.event_id === $(this).data('eventid')})
+        eventId = filteredEvent
+        refreshShowInfoTable()
         $("#showInfoEvent").removeClass('opacity-0').removeClass('invisible')
         $("#showInfoModalContent").removeClass('scale-0')
-        let filteredEvent = events.filter(e=> {return e.event_id === $(this).data('eventid')})
         $("#showInfoEventId").val(filteredEvent[0].event_id)
         $("#showInfoHeader").val(filteredEvent[0].header)
         $("#showInfoDescription").val(filteredEvent[0].description)
@@ -234,9 +216,92 @@ $(document).ready(function(){
         }))
         $("#showInfoTotal").text(filteredEvent[0].total_students)
     })
+    //Fetch Vouched Students
+    async function fetchVouchedStudents(){
+        let result = await $.ajax({
+            headers:header,
+            url:'/api/fetchVouchedStudents',
+            method:'get',
+            data:
+            {
+                eventId:eventId,
+                rows:rows,
+                searchString:$("#simple-search").val()
+            },
+            success:function(res)
+            {
+                vouchedStudents = res
+            },
+            error:function(err)
+            {
+                console.log(err)
+            }
+        })
+        return result;
+    }
+
+    //Refresh Show Info Table
+    function refreshShowInfoTable(){
+        fetchVouchedStudents().then(res=>{
+            $(".showInfoTable").html(
+                res.data.length != 0 ?
+                    res.data.map((e,i)=>{
+                        console.log(e)
+                        return `<tr class="bg-white border-b">
+                                    <td class="px-6 py-4">${i+1}</td>
+                                    <td class="px-6 py-4">${e.student_id}</td>
+                                    <td class="px-6 py-4">${e.students.fullname}</td>
+                                    <td class="px-6 py-4">${e.entrance_voucher}</td>
+                                    <td class="px-6 py-4">${e.exit_voucher == null ? `not Vouched` : e.exit_voucher}</td>
+                                </tr>`
+                    })
+                :
+                `<tr
+                class="border-b bg-neutral-100 ">
+                <td
+                  colspan="5"
+                  class="whitespace-nowrap px-6 py-4 text-center">
+                  No Data Found
+                </td>
+              </tr>`
+                    
+            )
+            $(".paginationContainer").html(
+                (res.links).map(e=>{
+                    return `<button ${e.url == null ? `disabled="true"` : e.active? `disabled="true"` : "" }
+                        links="${ e.url != null && new URL(e.url).searchParams.get("page")}"
+                        class="paginationLinks text-xs lg:text-base px-2 py-1 text-sm rounded border 
+                        ${e.url == null ? `bg-gray-100 cursor-default` : e.active? `bg-lime-500 cursor-default text-white `:
+                        `bg-white cursor-pointer transition hover:scale-125 focus:text-white hover:bg-lime-500 hover:text-white `}">${e.label}</button> `
+                })
+            )
+            $(".paginationLinks").click(function(){
+                if($(this).attr("links") != "false")
+                {
+                    $(this).addClass("bg-lime-500")
+                    $(".paginationLinks").not(this).removeClass("bg-lime-500 text-white")
+                }
+            })
+
+            $(".paginationLinks").click(function(){
+                if($(this).attr("links") != "false")
+                {
+                    page = $(this).attr("links")
+                    refreshShowInfoTable();
+                }
+            })
+        })
+    }
+
+    //Filter Entries Show Info Table
+    $(document).on('change','#showInfoTableEntries', function(){
+        rows = $(this).val()
+        refreshShowInfoTable()
+    })
 
     //Close Show Info Modal
     $(document).on('click','#showInfoClose',function(){
+        $(".showInfoModal").empty()
         let modal = $(this).parent().parent().parent().parent()
         $("#showInfoEvent").addClass('opacity-0')
         $("#showInfoModalContent").addClass('scale-0')
