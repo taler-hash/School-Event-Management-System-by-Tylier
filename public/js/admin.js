@@ -117,7 +117,7 @@ $(document).ready(function(){
                 </div>
             </div>
             `)
-            $(`.error${buttonType}`).empty()
+            $(`.${buttonType}Errors`).empty()
             $(document).ajaxSuccess(function(){
                 $(`#${buttonType}Buttonsubmit`).removeAttr("disabled")
                 $(`#${buttonType}Buttonsubmit`).html(`<p>${buttonLabel}</p>`)
@@ -260,16 +260,19 @@ $(document).ready(function(){
             success:function(res)
             {
                 toastr.success("Successfully Updated", "Success")
+                search().then(()=>{
+                    ShowEventData()
+                })
+                $("#editTimeClose").trigger("click")
                 console.log(res);
             },
             error:function(err)
             {
                 $.each(err.responseJSON.errors, function(key, value){
-                   
                     value.map(e=>{
                         console.log(key)
-                        $(`#editTime${key}`).parent().parent().append(
-                            `<div class="loginErrors text-rose-500 text-sm">• ${e}</div>`
+                        $(`#editTime${key}`).parent().append(
+                            `<div class="editTimeErrors text-rose-500 text-sm">• ${e}</div>`
                         )
                     })
                 })
