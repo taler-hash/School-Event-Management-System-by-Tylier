@@ -114,9 +114,19 @@ class managerController extends Controller
     }
 
     public function vouchedStudents(Request $request){
-        
+        $searchString = $request->searchString;
         $data = RawLog::with("students:student_id,fullname,course,year")
-        ->where('event_id',$request->eventId)->paginate(10);
+        ->where('event_id', $request->eventId)
+        ->where(function($query) use ($request) {
+            $query->where('student_id','like', '%'.$request->searchString.'%')
+                    ->orWhere('entrance_voucher','like', '%'.$request->searchString.'%')
+                    ->orWhere('exit_voucher','like', '%'.$request->searchString.'%')
+                  ->orWhereHas('students', function($q) use ($request){
+                      $q->where('fullname','like', '%'.$request->searchString.'%');
+                  });
+        })
+        
+        ->paginate(10);
         return response()->json($data);
     }
 

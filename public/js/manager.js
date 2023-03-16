@@ -5,7 +5,7 @@ $(document).ready(function(){
     let students = []
     let events = []
     let announcement = []
-    let vouchedStudents = []
+    let searchString = ""
     let eventId = ""
     rows = 10
     let total = 0
@@ -226,7 +226,7 @@ $(document).ready(function(){
             {
                 eventId:eventId,
                 rows:rows,
-                searchString:$("#simple-search").val()
+                searchString:searchString
             },
             success:function(res)
             {
@@ -246,7 +246,6 @@ $(document).ready(function(){
             $(".showInfoTable").html(
                 res.data.length != 0 ?
                     res.data.map((e,i)=>{
-                        console.log(e)
                         return `<tr class="bg-white border-b">
                                     <td class="px-6 py-4">${i+1}</td>
                                     <td class="px-6 py-4">${e.student_id}</td>
@@ -296,6 +295,17 @@ $(document).ready(function(){
     //Filter Entries Show Info Table
     $(document).on('change','#showInfoTableEntries', function(){
         rows = $(this).val()
+        refreshShowInfoTable()
+    })
+    
+    //Search Bar in Show Info Table
+    $(document).on('click','#searchButtonShowInfoTable',function(){
+        searchString = $("#searchInputShowInfoTable").val()
+        refreshShowInfoTable()
+    })
+
+    //Refresh Show Info Table
+    $(document).on('click','.refreshShowInfoTable',function(){
         refreshShowInfoTable()
     })
 

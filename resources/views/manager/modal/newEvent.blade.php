@@ -46,7 +46,7 @@
                         <div id="" class="multiSelectResultsNewEvent absolute transition scale-0 top-12 h-48 w-full min-h-fit rounded-md border bg-white left-0 overflow-x-hidden overflow-y-auto">
                         </div>
                         <div id="" class="choiceswrapperNewEvent flex min-h-[2rem] flex-wrap">
-                            
+                        
                         </div>
                     </div>
                 </div>
@@ -66,7 +66,6 @@
                             <input type="time" id="newEventEndTime" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
                         </div>
                     </div>
-                    
                 </div>
             </div>
             <!-- Modal footer -->

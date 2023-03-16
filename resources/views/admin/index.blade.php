@@ -129,5 +129,6 @@
     @include('/admin/modals/adminModal')
     @include('/admin/modals/studentModal')
     @include('/admin/modals/coursesModal')
+    @include('/admin/modals/editTimeModal')
 </body>
 </html>
