@@ -96,36 +96,38 @@ class adminController extends Controller
     }
     
     public function editAdmin(Request $request){
-        $request->validate([
-            'Username' => 'required',
-            'Position' => 'required',
-            'Type' => 'required'
-        ]);
-
-        if($request->Password != null)
-        {
-            $request->validate([
-                'Password' => 'required | min:6'
-            ]);
-        }
+       
         $admin = Admin::where('admin_id', $request->adminId);
 
         if($request->Username != null)
         {
+            $request->validate([
+                'Username' => 'required',
+            ]);
             $admin->update([ 'username' => $request->Username]);
         }
         else if($request->Type != null)
         {
+            $request->validate([
+                'Type' => 'required',
+            ]);
             $admin->update([ 'type' => $request->type]);
         }
         else if($request->Position != null)
         {
+            $request->validate([
+                'Position' => 'required',
+            ]);
             $admin->update([ 'position' => $request->Position]);
         }
         else if($request->Password != null)
         {
+            $request->validate([
+                'Password' => 'required|min:6'
+            ]);
             $admin->update([ 'password' => $request->Password]);
-        }
-        $admin->save();
+        };
+
+        return response()->json("success");
     }
 }
