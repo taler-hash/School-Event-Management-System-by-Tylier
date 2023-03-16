@@ -74,17 +74,24 @@ class adminController extends Controller
     }
 
     public function editTime(Request $request){
-        dd($request->all());
         $request->validate([
             'StartTime' => 'required',
             'EndTime' => 'required | after:StartTime',
-            'startDate' => 'required | after:today',
+            'StartDate' => 'required | after:today',
         ],
         [
-            'Date.after' => 'The Date needs to be later than now.'
+            'StartDate.after' => 'The Date needs to be later than now.'
         ]
         );
+
+        Event::where('event_id',$request->EventId)
+        ->update([
+            'start_date' => $request->StartDate,
+            'start_time' => $request->StartTime,
+            'end_time' => $request->EndTime
+        ]);
         
+        return response()->json("success");
 
     }
 }
