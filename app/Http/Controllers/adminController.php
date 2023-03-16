@@ -44,7 +44,7 @@ class adminController extends Controller
                 ->paginate(10);
             break;
 
-            case("Announcement"):
+            case("Announcements"):
                 $data = 
                 Announcement::select("*")
                 ->where('header','like', '%'.$searchString.'%')
@@ -93,5 +93,39 @@ class adminController extends Controller
         
         return response()->json("success");
 
+    }
+    
+    public function editAdmin(Request $request){
+        $request->validate([
+            'Username' => 'required',
+            'Position' => 'required',
+            'Type' => 'required'
+        ]);
+
+        if($request->Password != null)
+        {
+            $request->validate([
+                'Password' => 'required | min:6'
+            ]);
+        }
+        $admin = Admin::where('admin_id', $request->adminId);
+
+        if($request->Username != null)
+        {
+            $admin->update([ 'username' => $request->Username]);
+        }
+        else if($request->Type != null)
+        {
+            $admin->update([ 'type' => $request->type]);
+        }
+        else if($request->Position != null)
+        {
+            $admin->update([ 'position' => $request->Position]);
+        }
+        else if($request->Password != null)
+        {
+            $admin->update([ 'password' => $request->Password]);
+        }
+        $admin->save();
     }
 }

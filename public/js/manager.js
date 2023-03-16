@@ -161,11 +161,11 @@ $(document).ready(function(){
 
     //Convert Time Function
     function convertTime(data)
-        {
-            let time = data.split(':');// here the time is like "16:14"
-            let meridiemTime = time[0] >= 12 && (time[0]-12 || 12) + ':' + time[1] + ' PM' || (Number(time[0]) || 12) + ':' + time[1] + ' AM';
-            return meridiemTime
-        }
+    {
+        let time = data.split(':');// here the time is like "16:14"
+        let meridiemTime = time[0] >= 12 && (time[0]-12 || 12) + ':' + time[1] + ' PM' || (Number(time[0]) || 12) + ':' + time[1] + ' AM';
+        return meridiemTime
+    }
 
     //SHOW INFO Function ---------------------------------------
 
@@ -216,6 +216,7 @@ $(document).ready(function(){
         }))
         $("#showInfoTotal").text(filteredEvent[0].total_students)
     })
+    
     //Fetch Vouched Students
     async function fetchVouchedStudents(){
         let result = await $.ajax({

@@ -58,6 +58,7 @@ Route::prefix('api')->group(function(){
     Route::get('/admin/fetchAll',[adminController::class,'fetchAll']);
     Route::get('/admin/searchData',[adminController::class,'searchData']);
     Route::post('/admin/editTime',[adminController::class,'editTime']);
+    Route::post('/admin/editAdmin',[adminController::class,'editAdmin']);
 });
 
 //Admin

@@ -44,6 +44,7 @@ $(document).ready(function(){
         $(".courseCount").text(Courses.data.length != 0 ? Courses.data.length : 0)
         
     })
+    //Functions----------------------------------------------------------
 
     //Open Modal Function
     function OpenModal(modalType)
@@ -101,7 +102,7 @@ $(document).ready(function(){
     }
     
     //Loading Button
-    //Functions----------------------------------------------------------
+    
     function loadingButton(buttonType, buttonLabel)
         {
             $(`.errorusername`).empty()
@@ -128,6 +129,14 @@ $(document).ready(function(){
                 $(`#${buttonType}Buttonsubmit`).html(`<p>${buttonLabel}</p>`)
             })
     }
+    
+    //Convert Time Function
+    function convertTime(data)
+    {
+        let time = data.split(':');// here the time is like "16:14"
+        let meridiemTime = time[0] >= 12 && (time[0]-12 || 12) + ':' + time[1] + ' PM' || (Number(time[0]) || 12) + ':' + time[1] + ' AM';
+        return meridiemTime
+    }
 
     //EVENTS Function----------------------------------------------------------------
 
@@ -145,8 +154,8 @@ $(document).ready(function(){
                     <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-center">${e.total_students}</td>
                     <td class="px-6 py-4">${e.created_date}</td>
                     <td class="px-6 py-4">${e.start_date}</td>
-                    <td class="px-6 py-4">${e.start_time}</td>
-                    <td class="px-6 py-4">${e.end_time}</td>
+                    <td class="px-6 py-4">${convertTime(e.start_time)}</td>
+                    <td class="px-6 py-4">${convertTime(e.end_time)}</td>
                     <td class="px-6 py-4">
                         <button eventid="${e.event_id}" startdate="${e.start_date}" starttime="${e.start_time}" endtime="${e.end_time}" header="${e.header}" class="buttonEditTime text-green-500 p-2 transition hover:text-red-600" title="Edit Time">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -160,7 +169,7 @@ $(document).ready(function(){
             `<tr
                 class="border-b bg-neutral-100 ">
                 <td
-                colspan="10"
+                colspan="11"
                 class="whitespace-nowrap px-6 py-4 text-center">
                 No Data Found
                 </td>
@@ -455,9 +464,75 @@ $(document).ready(function(){
 
     //ADMIN Function----------------------------------------------------------------------
 
+    function ShowAdminData()
+    {
+        $(".tableDataAdmin").html(
+            Admin.data.length != 0 ?
+            Admin.data.map((e, i)=>{
+                return  `<tr class="bg-white border-b">
+                    <td class="px-6 py-4 ">${i + 1}</td>
+                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">${e.username}</td>
+                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">${e.type}</td>
+                    <td class="px-6 py-4">${e.position}</td>
+                    <td class="px-6 py-4">
+                        <button username="${e.username}" type="${e.type}" position="${e.position}" adminid="${e.admin_id}" class="buttonEditAdmin text-green-500 transition hover:text-red-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                            </svg>
+                        </button>
+                    </td>
+                </tr>`
+            })
+            :
+            `<tr
+                class="border-b bg-neutral-100 ">
+                <td
+                colspan="6"
+                class="whitespace-nowrap px-6 py-4 text-center">
+                No Data Found
+                </td>
+            </tr>`
+        )
+        //Pagination 
+        function paginationAdmin()
+        {
+            $(".paginationContainer").html(
+                (Admin.links).map(e=>{
+                    return `<button ${e.url == null ? `disabled="true"` : e.active? `disabled="true"` : "" }
+                        links="${ e.url != null && new URL(e.url).searchParams.get("page")}"
+                        class="paginationLinks text-xs lg:text-base px-2 py-1 text-sm rounded border 
+                        ${e.url == null ? `bg-gray-100 cursor-default` : e.active? `bg-lime-500 cursor-default text-white `:
+                        `bg-white cursor-pointer transition hover:scale-125 focus:text-white hover:bg-lime-500 hover:text-white `}">${e.label}</button> `
+                })
+            )
+            $(".paginationLinks").click(function(){
+                if($(this).attr("links") != "false")
+                {
+                    $(this).addClass("bg-lime-500")
+                    $(".paginationLinks").not(this).removeClass("bg-lime-500 text-white")
+                }
+            })
+        
+            $(".paginationLinks").click(function(){
+                if($(this).attr("links") != "false")
+                {
+                    page = $(this).attr("links")
+                    console.log(page)
+                    search().then(()=>{
+                        ShowAdminData()
+                        paginationAdmin()
+                    })
+                }
+            })
+        }
+        paginationAdmin()
+    }
+
     //Open Modal
     $(document).on('click', '.showAdmin', function(){
+        Type = "Rawlogs"
         OpenModal("admin")
+        ShowAdminData()
     })
 
     //Close Modal
@@ -465,8 +540,67 @@ $(document).ready(function(){
         let modal = $(this).parent().parent().parent().parent()
         ModalCloseTransition(modal, 'admin')
     })
+    let editAdminUsername = ""
+    let editAdminType = ""
+    let editAdminPosition = ""
+    let editAdminid = ""
+    //Open Modal Edit Admin
+    $(document).on('click','.buttonEditAdmin',function(){
+        OpenModal("editAdmin")
+        editAdminid = $(this).attr('adminid')
+        editAdminUsername = $(this).attr('username')
+        editAdminType = $(this).attr('type')
+        editAdminPosition = $(this).attr('position')
+        $("#editAdminUsername").val($(this).attr('username'))
+        $("#editAdminType").val($(this).attr('type'))
+        $("#editAdminPosition").val($(this).attr('position'))
+    })
 
-    //STUDENTS Function
+    //Close Modal Edit Admin
+    $(document).on('click',`#editAdminClose`,function(){
+        let modal = $(this).parent().parent().parent().parent()
+        ModalCloseTransition(modal, 'editAdmin')
+    })
+    //Submit Button Edit Admin
+    $(document).on('click','#editAdminButtonsubmit',function () {
+        
+        if($("#editAdminUsername").val() === editAdminUsername 
+            && $("#editAdminType").val() === editAdminType
+            && $("#editAdminPosition").val() === editAdminPosition)
+        {
+            toastr.info("No Changes Were Made", "Info")
+        }
+        else
+        {
+            loadingButton("editAdmin", "Update")
+            $.ajax({
+                headers:header,
+                url:'/api/admin/editAdmin',
+                method:'post',
+                data:
+                {
+                    adminId:editAdminid,
+                    Username:$("#editAdminUsername").val() != editAdminUsername ? 
+                            $("#editAdminUsername").val() : null,
+                    Type:$("#editAdminType").val() != editAdminType ?
+                            $("#editAdminType").val() : null,
+                    Position:$("#editAdminPosition").val() != editAdminPosition ?
+                            $("#editAdminPosition").val() : null,
+                    Password:$("#editAdminPassword").val(),
+                },
+                success:function(res)
+                {
+                    console.log(res)
+                },
+                error:function(err)
+                { 
+                    console.log(err)
+                }
+            })
+        }    
+    })
+
+    //STUDENTS Function--------------------------------------------------------------------
 
     //Open Modal
     $(document).on('click', '.showStudents', function(){

@@ -130,5 +130,6 @@
     @include('/admin/modals/studentModal')
     @include('/admin/modals/coursesModal')
     @include('/admin/modals/editTimeModal')
+    @include('./admin/modals/editAdminModel')
 </body>
 </html>
