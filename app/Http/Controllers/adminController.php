@@ -101,10 +101,10 @@ class adminController extends Controller
         $request->validate([
             'StartTime' => 'required',
             'EndTime' => 'required | after:StartTime',
-            'StartDate' => 'required | after:today',
+            'StartDate' => 'required | after:yesterday',
         ],
         [
-            'StartDate.after' => 'The Date needs to be later than now.'
+            'StartDate.after' => 'The Date must be greater than or equal today.'
         ]
         );
 

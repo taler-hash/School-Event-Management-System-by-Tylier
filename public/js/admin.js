@@ -727,7 +727,7 @@ $(document).ready(function(){
             `<tr
                 class="border-b bg-neutral-100 ">
                 <td
-                colspan="6"
+                colspan="8"
                 class="whitespace-nowrap px-6 py-4 text-center">
                 No Data Found
                 </td>
@@ -758,7 +758,7 @@ $(document).ready(function(){
                 {
                     page = $(this).attr("links")
                     search().then(()=>{
-                        ShowAdminData()
+                        ShowStudentData()
                         paginationAdmin()
                     })
                 }
