@@ -33,7 +33,7 @@
                     </div>
                     <div class="mb-2">
                         <label for="default-input" class="block mb-2 text-sm font-medium text-gray-900">New Password</label>
-                        <input type="password" id="editAdminPassword" placeholder="Input New Password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" >
+                        <input type="text" id="editAdminPassword" placeholder="Input New Password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" >
                     </div>
                 </div>
             </div>

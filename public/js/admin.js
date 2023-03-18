@@ -36,12 +36,12 @@ $(document).ready(function(){
     }
 
     fetchAll().then((res)=>{   
-        $(".eventCount").text(Events.data.length != 0 ? Events.data.length : 0)
-        $(".announcementCount").text(Announcements.data.length != 0 ? Announcements.data.length : 0)
-        $(".rawlogsCount").text(Rawlogs.data.length != 0 ? Rawlogs.data.length : 0 )
-        $(".adminCount").text(Admin.data.length != 0 ? Admin.data.length : 0)
-        $(".studentCount").text(Students.data.length != 0 ? Students.data.length : 0)
-        $(".courseCount").text(Courses.data.length != 0 ? Courses.data.length : 0)
+        $(".eventCount").text(Events.total)
+        $(".announcementCount").text(Announcements.total)
+        $(".rawlogsCount").text(Rawlogs.total)
+        $(".adminCount").text(Admin.total)
+        $(".studentCount").text(Students.total)
+        $(".coursesCount").text(Courses.total)
         
     })
     //Functions----------------------------------------------------------
@@ -80,7 +80,6 @@ $(document).ready(function(){
             },
             success:function(res)
             {
-                console.log(res)
                 res.type === "Events" ?
                 Events = res.data :
                 res.type === "Announcement"?
@@ -105,8 +104,6 @@ $(document).ready(function(){
     
     function loadingButton(buttonType, buttonLabel)
         {
-            $(`.errorusername`).empty()
-            $(`.errorpassword`).empty()
             $(`#${buttonType}Buttonsubmit`).attr("disabled", "true")
             $(`#${buttonType}Buttonsubmit`).html(`
             <div class="">
@@ -293,6 +290,7 @@ $(document).ready(function(){
 
     function ShowAnnouncementData()
     {
+        
         $(".tableDataAnnouncements").html(
             Announcements.data.length != 0 ?
             Announcements.data.map((e, i)=>{
@@ -474,10 +472,15 @@ $(document).ready(function(){
                     <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">${e.username}</td>
                     <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">${e.type}</td>
                     <td class="px-6 py-4">${e.position}</td>
-                    <td class="px-6 py-4">
+                    <td class="px-6 py-4 flex space-x-2">
                         <button username="${e.username}" type="${e.type}" position="${e.position}" adminid="${e.admin_id}" class="buttonEditAdmin text-green-500 transition hover:text-red-500">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                            </svg>
+                        </button>
+                        <button adminid="${e.admin_id}" class="buttonDelete Admin text-green-500 transition hover:text-red-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M22 10.5h-6m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
                             </svg>
                         </button>
                     </td>
@@ -530,7 +533,7 @@ $(document).ready(function(){
 
     //Open Modal
     $(document).on('click', '.showAdmin', function(){
-        Type = "Rawlogs"
+        Type = "Admin"
         OpenModal("admin")
         ShowAdminData()
     })
@@ -540,6 +543,31 @@ $(document).ready(function(){
         let modal = $(this).parent().parent().parent().parent()
         ModalCloseTransition(modal, 'admin')
     })
+
+    //Delete User Button Submit
+    $(document).on("click",".buttonDelete",function(){
+        $.ajax({
+            headers:header,
+            url:'/api/admin/deleteUser',
+            method:'post',
+            data:
+            {
+                adminId:$(this).attr('adminid')
+            },
+            success:function(res)
+            {
+                toastr.success("User Deleted Successfully", "Success")
+                search().then(()=>{
+                    ShowAdminData()
+                    $(".adminCount").text(Admin.data.length != 0 ? Admin.data.length : 0)
+                })
+            },
+            error:function(err){
+                console.log(err)
+            }
+        })
+    })
+
     let editAdminUsername = ""
     let editAdminType = ""
     let editAdminPosition = ""
@@ -561,6 +589,7 @@ $(document).ready(function(){
         let modal = $(this).parent().parent().parent().parent()
         ModalCloseTransition(modal, 'editAdmin')
     })
+
     //Submit Button Edit Admin
     $(document).on('click','#editAdminButtonsubmit',function () {
         
@@ -590,7 +619,11 @@ $(document).ready(function(){
                 },
                 success:function(res)
                 {
-                    console.log(res)
+                    toastr.success("Successfully Updated", "Success")
+                    search().then(()=>{
+                        ShowAdminData()
+                    })
+                    $("#editAdminClose").trigger("click")
                 },
                 error:function(err)
                 { 
@@ -600,11 +633,145 @@ $(document).ready(function(){
         }    
     })
 
+    //Search Button
+    $(document).on("click",'.searchBarAdmin',function(){
+        searchString = $('.searchInputAdmin').val()
+        Type = "Admin"
+        console.log(Type)
+        search().then(()=>{
+            ShowAdminData()
+        })
+    })
+
+    //Open Modal Add Admin
+    $(document).on('click','.buttonAddAdmin',function(){
+        OpenModal("addAdmin")
+    })
+
+    //Close Modal Edit Admin
+    $(document).on('click',`#addAdminClose`,function(){
+        let modal = $(this).parent().parent().parent().parent()
+        ModalCloseTransition(modal, 'addAdmin')
+        $(".addAdminErrors").remove()
+    })
+
+    //Submit Button Add Modal
+    $(document).on('click','#addAdminButtonsubmit',function () {
+        $(".addAdminErrors").remove()
+        loadingButton("addAdmin", "Submit")
+        $.ajax({
+            headers:header,
+            url:'/api/admin/addUser',
+            method:'post',
+            data:
+            {
+                Username:$("#addAdminUsername").val(),
+                Type: $("#addAdminType").val(),
+                Position:$("#addAdminPosition").val(),
+                Password:$("#addAdminPassword").val()
+            },
+            success:function(res){
+                toastr.success("Successfully Created", "Success")
+                $("#addAdminClose").trigger("click")
+                search().then(()=>{
+                    ShowAdminData()
+                    $(".adminCount").text(Admin.total)
+                })
+            },
+            error:function(err){
+                $.each(err.responseJSON.errors, function(key, value){
+                    $(`#addAdmin${key}`).parent().append(
+                        value.map(e=>{
+                            return `<small class="addAdminErrors text-rose-500">• ${value}</small>`
+                        })
+                    )
+                })
+            }
+        })    
+    })
+
     //STUDENTS Function--------------------------------------------------------------------
+
+    function ShowStudentData()
+    {
+        $(".tableDatastudent").html(
+            Students.data.length != 0 ?
+            Students.data.map((e, i)=>{
+                return  `<tr class="bg-white border-b">
+                    <td class="px-6 py-4 ">${i + 1}</td>
+                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">${e.student_id}</td>
+                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">${e.fullname}</td>
+                    <td class="px-6 py-4">${e.course}</td>
+                    <td class="px-6 py-4">${e.year}</td>
+                    <td class="px-6 py-4">${e.email}</td>
+                    <td class="px-6 py-4">
+                        <span class="px-2 ${e.status == "active" ? `bg-green-500` :`bg-red-500`} text-sm font-bold py-1 rounded-full text-white">
+                            ${e.status}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 flex space-x-2">
+                        <button studentid="${e.student_id}" fullname="${e.fullname}" course="${e.course}" year="${e.year}" email="${e.email}" status="${e.status}" class="buttonEditStudent text-green-500 transition hover:text-red-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                            </svg>
+                        </button>
+                        <button studentid="${e.student_id}" class="buttonDeleteStudent text-green-500 transition hover:text-red-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M22 10.5h-6m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
+                            </svg>
+                        </button>
+                    </td>
+                </tr>`
+            })
+            :
+            `<tr
+                class="border-b bg-neutral-100 ">
+                <td
+                colspan="6"
+                class="whitespace-nowrap px-6 py-4 text-center">
+                No Data Found
+                </td>
+            </tr>`
+        )
+        //Pagination 
+        function paginationAdmin()
+        {
+            $(".paginationContainer").html(
+                (Admin.links).map(e=>{
+                    return `<button ${e.url == null ? `disabled="true"` : e.active? `disabled="true"` : "" }
+                        links="${ e.url != null && new URL(e.url).searchParams.get("page")}"
+                        class="paginationLinks text-xs lg:text-base px-2 py-1 text-sm rounded border 
+                        ${e.url == null ? `bg-gray-100 cursor-default` : e.active? `bg-lime-500 cursor-default text-white `:
+                        `bg-white cursor-pointer transition hover:scale-125 focus:text-white hover:bg-lime-500 hover:text-white `}">${e.label}</button> `
+                })
+            )
+            $(".paginationLinks").click(function(){
+                if($(this).attr("links") != "false")
+                {
+                    $(this).addClass("bg-lime-500")
+                    $(".paginationLinks").not(this).removeClass("bg-lime-500 text-white")
+                }
+            })
+        
+            $(".paginationLinks").click(function(){
+                if($(this).attr("links") != "false")
+                {
+                    page = $(this).attr("links")
+                    search().then(()=>{
+                        ShowAdminData()
+                        paginationAdmin()
+                    })
+                }
+            })
+        }
+        paginationAdmin()
+    }
 
     //Open Modal
     $(document).on('click', '.showStudents', function(){
+        Type = "Students"
         OpenModal("student")
+        ShowStudentData()
     })
 
     //Close Modal
@@ -613,17 +780,266 @@ $(document).ready(function(){
         ModalCloseTransition(modal, 'student')
     })
 
+    let editStudentid = ''
+    let editStudentFullname = ''
+    let editStudentCourse = ''
+    let editStudentYear = ''
+    let editStudentEmail = ''
+    let editStudentStatus = ''
+    //Open Edit Student Modal
+    $(document).on('click', '.buttonEditStudent', function(){
+        OpenModal("editStudent")
+        $("#editStudentCourse").html(
+            Courses.data.map(e=>{
+                return `<option value="${e.course}">${e.course}</option>`
+            })
+        )
+        editStudentid = $(this).attr('studentid')
+        editStudentFullname = $(this).attr('fullname')
+        editStudentCourse = $(this).attr('course')
+        editStudentYear = $(this).attr('year')
+        editStudentEmail = $(this).attr('email')
+        editStudentStatus = $(this).attr('status')
+
+        $("#editStudentid").val($(this).attr('studentid'))
+        $("#editStudentFullname").val($(this).attr('fullname'))
+        $("#editStudentCourse").val($(this).attr('course'))
+        $("#editStudentYear").val($(this).attr('year'))
+        $("#editStudentEmail").val($(this).attr('email'))
+        $("#editStudentStatus").val($(this).attr('status'))
+        $("#editStudentPassword").val("")
+
+    })
+
+    //Close Edit Student Modal
+    $(document).on('click',`#editStudentClose`,function(){
+        let modal = $(this).parent().parent().parent().parent()
+        $(".editStudentErrors").remove()
+        ModalCloseTransition(modal, 'editStudent')
+    })
+    
+    //Submit Button Edit Modal
+    $(document).on('click','#editStudentButtonsubmit',function () {
+        
+        if($("#editStudentid").val() == editStudentid &&
+            $("#editStudentFullname").val() == editStudentFullname &&
+            $("#editStudentCourse").val() == editStudentCourse &&
+            $("#editStudentYear").val() == editStudentYear &&
+            $("#editStudentEmail").val() == editStudentEmail &&
+            $("#editStudentStatus").val() == editStudentStatus &&
+            $("#editStudentPassword").val().length == 0
+
+        )
+        {
+            toastr.info("No Changes Were Made", "Info")
+        }
+        else
+        {
+            loadingButton("editStudent", "Update")
+            $(".editAdminErrors").remove()
+            $.ajax({
+                headers:header,
+                url:'/api/admin/editStudent',
+                method:'post',
+                data:
+                {
+                    id:$("#editStudentid").val(),
+                    Fullname:$("#editStudentFullname").val(),
+                    Course:$("#editStudentCourse").val(),
+                    Year:$("#editStudentYear").val(),
+                    Email:$("#editStudentEmail").val(),
+                    Status:$("#editStudentStatus").val(),
+                    Password:$("#editStudentPassword").val()
+
+                },
+                success:function(res)
+                {
+                    toastr.success("Successfully Updated", "Success")
+                    search().then(()=>{
+                        ShowStudentData()
+                    })
+                    $("#editStudentClose").trigger("click")
+                },
+                error:function(err)
+                { 
+                    $.each(err.responseJSON.errors, function(key, value){
+                        $(`#editStudent${key}`).parent().append(
+                            value.map(e=>{
+                                return `<small class="editStudentErrors text-rose-500">• ${value}</small>`
+                            })
+                        )
+                    })
+                }
+            })
+        }    
+    })
+
+    //Delete Student Submit Button
+    $(document).on("click",".buttonDeleteStudent",function(){
+        $.ajax({
+            headers:header,
+            url:'/api/admin/deleteStudent',
+            method:'post',
+            data:
+            {
+                studentId:$(this).attr('studentid')
+            },
+            success:function(res)
+            {
+                toastr.success("User Deleted Successfully", "Success")
+
+                search().then(()=>{
+                    ShowStudentData()
+                    $(".studentCount").text(Students.data.length != 0 ? Students.data.length : 0)
+                })
+            },
+            error:function(err){
+            }
+        })
+    })
+
     //COURSES Function
+
+    function ShowCoursesData()
+    {
+        $(".tableDatacourse").html(
+            Courses.data.length != 0 ?
+            Courses.data.map((e, i)=>{
+                return  `<tr class="bg-white border-b">
+                    <td class="px-6 py-4 ">${i + 1}</td>
+                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">${e.course}</td>
+                    <td class="px-6 py-4 flex space-x-2">
+                        <button courseid="${e.course_id}" class="buttonDeleteCourse text-green-500 transition hover:text-red-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </button>
+                    </td>
+                </tr>`
+            })
+            :
+            `<tr
+                class="border-b bg-neutral-100 ">
+                <td
+                colspan="6"
+                class="whitespace-nowrap px-6 py-4 text-center">
+                No Data Found
+                </td>
+            </tr>`
+        )
+        //Pagination 
+        function paginationAdmin()
+        {
+            $(".paginationContainer").html(
+                (Courses.links).map(e=>{
+                    return `<button ${e.url == null ? `disabled="true"` : e.active? `disabled="true"` : "" }
+                        links="${ e.url != null && new URL(e.url).searchParams.get("page")}"
+                        class="paginationLinks text-xs lg:text-base px-2 py-1 text-sm rounded border 
+                        ${e.url == null ? `bg-gray-100 cursor-default` : e.active? `bg-lime-500 cursor-default text-white `:
+                        `bg-white cursor-pointer transition hover:scale-125 focus:text-white hover:bg-lime-500 hover:text-white `}">${e.label}</button> `
+                })
+            )
+            $(".paginationLinks").click(function(){
+                if($(this).attr("links") != "false")
+                {
+                    $(this).addClass("bg-lime-500")
+                    $(".paginationLinks").not(this).removeClass("bg-lime-500 text-white")
+                }
+            })
+        
+            $(".paginationLinks").click(function(){
+                if($(this).attr("links") != "false")
+                {
+                    page = $(this).attr("links")
+                    search().then(()=>{
+                        ShowCoursesData()
+                        paginationAdmin()
+                    })
+                }
+            })
+        }
+        paginationAdmin()
+    }
 
     //Open Modal
     $(document).on('click', '.showCourses', function(){
+        Type = "Course"
         OpenModal("course")
+        ShowCoursesData()
     })
 
     //Close Modal
     $(document).on('click',`#courseClose`,function(){
         let modal = $(this).parent().parent().parent().parent()
         ModalCloseTransition(modal, 'course')
+    })
+    
+    //Open Modal Add Course
+    $(document).on('click', '.buttonAddCourse ', function(){
+        OpenModal("addCourse")
+    })
+
+    //Close Modal Add Course
+    $(document).on('click',`#addCourseClose`,function(){
+        let modal = $(this).parent().parent().parent().parent()
+        ModalCloseTransition(modal, 'addCourse')
+        $("#addCourse").val("")
+        $(".courseErrors").remove()
+    })
+
+    //Add Course Modal Submit
+    $(document).on("click","#addCourseButtonsubmit",function(){
+        loadingButton("addCourse", "Submit")
+        $(".courseErrors").remove()
+        $.ajax({
+            headers:header,
+            url:'/api/admin/addCourse',
+            method:'post',
+            data:
+            {
+                Course:$("#addCourse").val()
+            },
+            success:function(res)
+            {
+                toastr.success("Course Added Successfully", "Success")
+                $("#addCourseClose").trigger("click")
+                search().then(()=>{
+                    ShowCoursesData()
+                    $(".coursesCount").text(Courses.total)
+                })
+            },
+            error:function(err)
+            {
+                $.each(err.responseJSON.errors, function(key, value){
+                    $(`#addCourse`).parent().append(
+                        value.map(e=>{
+                            return `<small class="courseErrors text-rose-500">• ${value}</small>`
+                        })
+                    )
+                })
+            }
+        })
+    })
+
+    //Delete Button Course
+    $(document).on('click','.buttonDeleteCourse',function(){
+        $.ajax({
+            headers:header,
+            url:'/api/admin/deleteCourse',
+            method:'post',
+            data:
+            {
+                courseId:$(this).attr('courseid')
+            },
+            success:function()
+            {
+                toastr.success("Course Deleted Successfully", "Success")
+                search().then(()=>{
+                    ShowCoursesData()
+                    $(".coursesCount").text(Courses.total)
+                })
+            }
+        })
     })
     
     //Show Option---------------------------------------------------------

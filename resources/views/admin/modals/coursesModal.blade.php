@@ -1,5 +1,5 @@
 <div id="courseModal" tabindex="-1" aria-hidden="true" class="fixed invisible transition opacity-0 bg-gray-100/50 top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-hidden md:inset-0 h-screen md:h-full flex items-center justify-center">
-    <div class="relative w-full h-auto max-w-lg md:h-auto">
+    <div class="relative w-full h-screen max-w-sm md:h-auto">
         <!-- Modal content -->
         <div id="courseModalContent" class="relative bg-white rounded-lg shadow transition scale-0 duration-500 h-auto">
             <!-- Modal header -->
@@ -12,13 +12,41 @@
                     <span class="sr-only">Close modal</span>
                 </button>
             </div>
+            
             <!-- Modal body -->
-            <div class="p-6 space-y-4">
-                <div class="">asdasdasdasd</div>
-            </div>
-            <!-- Modal footer -->
-            <div class="flex items-center justify-center w-full p-6 space-x-2 border-t border-gray-200 rounded-b">
-                <button id="newAnnouncementButtonsubmit" data-modal-hide="defaultModal" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Create</button>
+            <div class="p-6">
+                <div class="flex justify-between items-end">
+                    <div class="mb-2">
+                        <button class="buttonAddCourse text-white right-2.5 bottom-2.5 bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2">
+                            Add
+                        </button>
+                    </div>
+                </div>
+                <div class="">
+                    <div class="grow relative overflow-x-auto min-h-fit max-h-[70vh]">
+                        <table class="w-full text-sm text-left text-gray-500">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 sticky top-0">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3">
+                                        #
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
+                                        course
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="tableDatacourse">
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="paginationContainer flex justify-end">
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>

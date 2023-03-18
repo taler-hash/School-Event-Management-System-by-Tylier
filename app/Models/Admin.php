@@ -11,5 +11,5 @@ class Admin extends Model
     public $timestamps = false;
     protected $connection = 'mysql';
     protected $table = 'admin';
-    protected $fillable = ['username', 'password','type'];
+    protected $fillable = ['username', 'password','type','position'];
 }

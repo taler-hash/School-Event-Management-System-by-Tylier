@@ -59,6 +59,12 @@ Route::prefix('api')->group(function(){
     Route::get('/admin/searchData',[adminController::class,'searchData']);
     Route::post('/admin/editTime',[adminController::class,'editTime']);
     Route::post('/admin/editAdmin',[adminController::class,'editAdmin']);
+    Route::post('/admin/addUser',[adminController::class,'addUser']);
+    Route::post('/admin/deleteUser',[adminController::class,'deleteUser']);
+    Route::post('/admin/editStudent',[adminController::class,'editStudent']);
+    Route::post('/admin/deleteStudent',[adminController::class,'deleteStudent']);
+    Route::post('/admin/addCourse',[adminController::class,'addCourse']);
+    Route::post('/admin/deleteCourse',[adminController::class,'deleteCourse']);
 });
 
 //Admin

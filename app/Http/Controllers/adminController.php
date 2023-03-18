@@ -62,6 +62,30 @@ class adminController extends Controller
                 ->orWhere('exit_voucher','like', '%'.$searchString.'%')
                 ->paginate(10);
             break;
+            case("Admin"):
+                $data = 
+                Admin::select('*')
+                ->where('username','like', '%'.$searchString.'%')
+                ->orWhere('type','like', '%'.$searchString.'%')
+                ->orWhere('position','like', '%'.$searchString.'%')
+                ->paginate(10);
+            break;
+            case("Students"):
+                $data = 
+                Students::select('*')
+                ->where('student_id','like', '%'.$searchString.'%')
+                ->orWhere('fullname','like', '%'.$searchString.'%')
+                ->orWhere('course','like', '%'.$searchString.'%')
+                ->orWhere('year','like', '%'.$searchString.'%')
+                ->orWhere('email','like', '%'.$searchString.'%')
+                ->orWhere('status','like', '%'.$searchString.'%')
+                ->paginate(10);
+            break;
+            case("Course"):
+                $data = 
+                Course  ::select("*")
+                ->paginate(10);
+            break;
 
             default:
                 $data="Error";
@@ -101,33 +125,110 @@ class adminController extends Controller
 
         if($request->Username != null)
         {
-            $request->validate([
-                'Username' => 'required',
-            ]);
             $admin->update([ 'username' => $request->Username]);
         }
         else if($request->Type != null)
         {
-            $request->validate([
-                'Type' => 'required',
-            ]);
-            $admin->update([ 'type' => $request->type]);
+            $admin->update([ 'type' => $request->Type]);
         }
         else if($request->Position != null)
         {
-            $request->validate([
-                'Position' => 'required',
-            ]);
             $admin->update([ 'position' => $request->Position]);
         }
         else if($request->Password != null)
         {
             $request->validate([
-                'Password' => 'required|min:6'
+                'Password' => 'min:6'
             ]);
             $admin->update([ 'password' => $request->Password]);
         };
 
+        return response()->json("success");
+    }
+    
+    public function addUser(Request $request){
+        $request->validate([
+            'Username' => 'required',
+            'Type' => 'required',
+            'Position' => 'required',
+            'Password' => 'required | min:6'
+        ]);
+
+         Admin::create([
+            'username' => $request->Username,
+            'type' => $request->Type,
+            'position' => $request->Position,
+            'password' => $request->Password
+         ]);
+
+         return response()->json("success");
+    }
+
+    public function deleteUser(Request $request){
+
+        Admin::where('admin_id', $request->adminId)->delete();
+
+        return response()->json("success");
+    }
+
+    public function editStudent(Request $request){
+
+        $request->validate([
+            'Fullname' => 'required',
+            'Course' => 'required',
+            'Year' => 'required| numeric',
+            'Email' => 'required | email',
+            'Status' => 'required'
+        ]);
+
+        
+       Students::where('student_id', $request->id)->update([
+        'fullname' => $request->Fullname,
+        'course' => $request->Course,
+        'year' => $request->Year,
+        'email' => $request->Email,
+        'status' => $request->Status,
+       ]);
+       if($request->Password != null)
+       {
+           $request->validate([
+              'Password' => 'required | min:6' 
+           ]);
+           Students::where('student_id', $request->id)->update([
+            'password' => $request->Password
+           ]);
+       }
+
+        return response()->json("success");
+
+        
+
+
+    }
+
+    public function deleteStudent (Request $request){
+
+        Students::where('student_id', $request->studentId)->delete();
+
+        return response()->json("success");
+    }
+
+    public function addCourse (Request $request){
+
+        $request->validate([
+            'Course' => 'required| unique:course,course'
+        ]);
+
+        $course = new Course;
+        $course->course = strtoupper($request->Course);
+        $course->save();
+
+        return response()->json("success");
+    }
+
+    public function deleteCourse (Request $request){
+
+        Course::where('course_id',$request->courseId)->delete();
         return response()->json("success");
     }
 }
