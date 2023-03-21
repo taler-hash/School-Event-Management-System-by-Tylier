@@ -42,6 +42,7 @@ Route::prefix('api')->group(function(){
             Route::post('/storeVouchers',[managerController::class,'storeVouchers']);
             Route::post('/fetchVouchers',[managerController::class,'fetchVouchers']);
             Route::get('/fetchVouchedStudents',[managerController::class,'vouchedStudents']);
+            Route::post('/printPresentStudents',[managerController::class,'printPresentStudent']);
 
         //Announcement
             Route::post('/announcement',[managerController::class,'announcement']);

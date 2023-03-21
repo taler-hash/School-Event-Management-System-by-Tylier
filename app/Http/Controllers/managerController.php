@@ -130,6 +130,14 @@ class managerController extends Controller
         return response()->json($data);
     }
 
+    public function printPresentStudent(Request $request){
+
+        $students = Rawlog::with(['students'])
+        ->where('event_id',$request->eventId)->get();
+
+        return response()->json($students);
+    }
+
     //Announcement
     public function announcement(Request $request){
         $announcement = Announcement::select('*')->where('created_by', $request->createdBy)->orderBy('announcement_id', 'desc')->get();

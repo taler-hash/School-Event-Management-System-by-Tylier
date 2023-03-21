@@ -310,6 +310,87 @@ $(document).ready(function(){
         refreshShowInfoTable()
     })
 
+    //Print Present Student Show Info Table
+    $(document).on('click','#printPresentStudentInfoTable', function(){
+        $.ajax({
+            headers:header,
+            url:'/api/printPresentStudents',
+            data:
+            {
+                eventId:$("#showInfoEventId").val(),
+                creator:$("#managerName").text()
+            },
+            method:'post',
+            success:function(res)
+            {
+                console.log(res)
+                if(res.length == 0)
+                {
+                    toastr.info("No Student are present at the moment", "Info")
+                }
+                else
+                {
+                    if(res.length === 0)
+                    {
+                        toastr.info("No student are registered")
+                    }
+                    else
+                    {
+                        // Create a new div to hold the vouchers
+                        var vouchersDiv = $("<div>");
+
+                        // Loop through the vouchers array and create a div for each voucher
+                        for (var i = 0; i < res.length; i++) {
+                        var voucherDivIn = $(`<tr style="padding:10px; border: 1px solid; margin-right: 0.25rem;margin-top: 0.25rem;height: min-content;page-break-inside: avoid;">`)
+                            .html(`
+                                <td style="padding-top: 10px;padding-bottom: 20px;padding-left: 20px;padding-right: 20px; border-collapse: collapse;border: 1px solid black;">${i+1}</td>
+                                <td style="padding-top: 10px;padding-bottom: 20px;padding-left: 20px;padding-right: 20px; border-collapse: collapse;border: 1px solid black;">${res[i].student_id}</td>
+                                <td style="padding-top: 10px;padding-bottom: 20px;padding-left: 20px;padding-right: 20px; border-collapse: collapse;border: 1px solid black;">${res[i].students.fullname}</td>
+                                <td style="padding-top: 10px;padding-bottom: 20px;padding-left: 20px;padding-right: 20px; border-collapse: collapse;border: 1px solid black;">${res[i].entrance_voucher}</td>
+                                <td style="padding-top: 10px;padding-bottom: 20px;padding-left: 20px;padding-right: 20px; border-collapse: collapse;border: 1px solid black;">${res[i].exit_voucher == null ? `Not Vouched` :res[i].exit_voucher }</td>`);
+                        vouchersDiv.append(voucherDivIn);
+                        }
+
+                        vouchersDiv.children().last().css('page-break-after', 'auto');
+                        var popupWin = window.open('', '_blank', 'fullscreen=yes');
+                        popupWin.document.open();
+                        popupWin.document.write(
+                            `<html>
+                                <head>
+                                    <title>
+                                       Event ID: ${$('#showInfoEventId').val()} /${$("#showInfoHeader").val()}  / ${$("#showInfoDate").val()} ${$("#showInfoFrom").text()} - ${$("#showInfoTo").text()}
+                                    </title>
+                                </head>
+                                <body>
+                                    <table class="width:100%">
+                                        <thead style="border: 1px solid black; border-collapse: collapse;"> 
+                                            <tr>
+                                                <th style="padding-top: 10px;padding-bottom: 20px;padding-left: 20px;padding-right: 20px; border-collapse: collapse;border: 1px solid black;">#</th>
+                                                <th style="padding-top: 10px;padding-bottom: 20px;padding-left: 20px;padding-right: 20px; border-collapse: collapse;border: 1px solid black;">Student ID</th>
+                                                <th style="padding-top: 10px;padding-bottom: 20px;padding-left: 20px;padding-right: 20px; border-collapse: collapse;border: 1px solid black;">Full Name</th>
+                                                <th style="padding-top: 10px;padding-bottom: 20px;padding-left: 20px;padding-right: 20px; border-collapse: collapse;border: 1px solid black;">In</th>
+                                                <th style="padding-top: 10px;padding-bottom: 20px;padding-left: 20px;padding-right: 20px; border-collapse: collapse;border: 1px solid black;">Out</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        ${vouchersDiv.html()}
+                                        </tbody>
+                                    </table>
+                                </body>
+                            </html>`);
+                        popupWin.document.close();
+                        popupWin.print();
+                    }
+                    
+                }
+            },
+            error:function(err)
+            {
+                console.log(err)
+            }
+        })
+    })
+
     //Close Show Info Modal
     $(document).on('click','#showInfoClose',function(){
         $(".showInfoModal").empty()
