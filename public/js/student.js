@@ -71,7 +71,8 @@ $(document).ready(function(){
     //RefreshEvents
     function refreshEvents()
     {
-        function compareTime(time)
+        console.log(vouch)
+        function compareTime(time, comparator)
         {
             const targetTimeString = time;
             const [targetHours, targetMinutes] = targetTimeString.split(":");
@@ -81,30 +82,37 @@ $(document).ready(function(){
             const targetTimeValue = targetDateObj.getTime();
 
             const currentTimeValue = new Date().getTime();
-            if (targetTimeValue < currentTimeValue) {
-                return true;
-            } 
-            else {
-                return false;
+            if(comparator == 'lessThan')
+            {
+                if (targetTimeValue < currentTimeValue) {
+                    return true;
+                } 
+                else {
+                    return false;
+                }   
             }
-        }
-        function compareDate(date)
-        {
-            const targetDateString = date
-            const [targetYear, targetMonth, targetDay] = targetDateString.split("-")
-
-            const targetDateObj = new Date(targetYear, targetMonth - 1, targetDay)
-            const currentDateObj = new Date()
-
-            const isSameDate = targetDateObj.getFullYear() === currentDateObj.getFullYear() &&
-                            targetDateObj.getMonth() === currentDateObj.getMonth() &&
-                            targetDateObj.getDate() === currentDateObj.getDate()
-
-            if (isSameDate) {
-                return true
-            } else {
-                return false
+            else if(comparator == 'greaterThan')
+            {
+                if (targetTimeValue > currentTimeValue) {
+                    return true;
+                } 
+                else {
+                    return false;
+                }
             }
+            else if (comparator == '1hr')
+            {
+                if(targetDateObj.setHours(targetHours) < targetDateObj.setHours(targetHours + 1))
+                {
+                    return true
+                }
+                else
+                {
+                    console.log(targetDateObj.setHours(targetHours) < targetDateObj.setHours(targetHours + 1))
+                    return false
+                }
+            }
+            
         }
         fetchEvents().then(data=>{
             data.length !== 0 ? 
@@ -125,18 +133,20 @@ $(document).ready(function(){
                         <p class="mb-3 font-normal text-gray-700 ">${e.description}</p>
                         <div class="w-full flex justify-between">
                         
-                        ${compareDate(e.start_date) ?
-                            
-                            `${vouch.filter(x=> {return x.student_id == $("#studentName").text() && x.event_id == e.event_id}).length == 0 ?
-                                `<button data-eventid="${e.event_id}" data-createdby="${e.created_by}" data-eventHeader="${e.header}" class="entranceVoucher inline-flex items-center px-3 py-2 text-sm font-medium text-center text-amber-400 bg-lime-600 rounded-lg hover:bg-green-600 transition">
-                                    Entrance Voucher
-                                </button> `
-                                :
-                                ``
-                            } 
+                        ${compareTime(e.end_time, '1hr') ?
+                            `${compareTime(e.end_time, 'greaterThan') ?
+                                `${vouch.filter(x=> {return x.student_id == $("#studentName").text() && x.event_id == e.event_id}).length == 0 ?
+                                    `<button data-eventid="${e.event_id}" data-createdby="${e.created_by}" data-eventHeader="${e.header}" class="entranceVoucher inline-flex items-center px-3 py-2 text-sm font-medium text-center text-amber-400 bg-lime-600 rounded-lg hover:bg-green-600 transition">
+                                        Entrance Voucher
+                                    </button> `
+                                    :
+                                    ``
+                                }`
+                            : 
+                            ``}
                               
-                            ${compareTime(e.end_time) ? 
-                                `${vouch.filter(x=>{return x.event_id == e.event_id && x.exit_voucher == null}).length == 1 ?
+                            ${compareTime(e.end_time, 'lessThan') ? 
+                                `${vouch.filter(x=>{return x.student_id == $("#studentName").text() && x.event_id == e.event_id}).filter(d=> d.exit_voucher == null).length == 1 ?
                                     `<button data-eventid="${e.event_id}" data-createdby="${e.created_by}" data-eventHeader="${e.header}"  class="exitVoucher inline-flex items-center px-3 py-2 text-sm font-medium text-center text-amber-400 bg-red-600 rounded-lg hover:bg-green-600 transition">
                                         Exit Voucher
                                     </button>`
@@ -149,7 +159,7 @@ $(document).ready(function(){
                             `
                             :
                             
-                            ``
+                            `<span class="text-red-500">The Event has been Ended</span>`
                         }
                        
                         </div>
@@ -274,7 +284,6 @@ $(document).ready(function(){
             },
             error:function(err)
             {
-                toastr.warning("Voucher Not Found","Warning")
                 console.log(err)
             }
         })

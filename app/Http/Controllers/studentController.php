@@ -14,7 +14,7 @@ class studentController extends Controller
     public function fetchEvents(Request $request){
         $user = Students::select("course")->where("student_id",$request->studentId)->first();
         $events = Event::select('*')->where('courses', 'LIKE','%'.$user->course.'%')->orderBy('event_id', 'desc')->get();
-        $voucher = Rawlog::all();
+        $voucher = Rawlog::with('students')->get();
         return response()->json(['eventData'=>$events, 'vouchers'=>$voucher]);
     }
 
