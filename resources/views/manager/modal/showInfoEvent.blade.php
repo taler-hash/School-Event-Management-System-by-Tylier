@@ -62,14 +62,11 @@
                                           
                                         </button>
                                     <div class="flex">
-                                        <div class="mr-2 flex space-x-2 items-center">                                              
-                                            <label for="countries" class="block mb-2 text-sm font-medium text-gray-900">Entries</label>
-                                            <select id="showInfoTableEntries" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
-                                                <option value="10">10</option>
-                                                <option value="25">25</option>
-                                                <option value="50">50</option>
-                                                <option value="75">75</option>
-                                                <option value="100">100</option>
+                                        <div class="mr-2 flex space-x-2 items-center justify-center">                                              
+                                            <label for="countries" class="block text-sm font-medium text-gray-900">Sort Course</label>
+                                            <select id="showInfoSortCourse" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-20 p-2.5 ">
+                                                <option value="asc">ASC</option>
+                                                <option value="desc">DESC</option>
                                             </select>
                                         </div>
                                         <div class="flex items-center w-64">   
@@ -96,7 +93,7 @@
                                     </div>
                                     
                                 </div>
-                                <table class="w-full text-sm text-left text-gray-500">
+                                <table id="showInfoTable" class=" w-full text-sm text-left text-gray-500">
                                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 ">
                                         <tr>
                                             <th scope="col" class="px-6 py-3">
@@ -107,6 +104,9 @@
                                             </th>
                                             <th scope="col" class="px-6 py-3">
                                                 Name
+                                            </th>
+                                             <th scope="col" class="px-6 py-3">
+                                                Course
                                             </th>
                                             <th scope="col" class="px-6 py-3">
                                                 In

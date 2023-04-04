@@ -274,6 +274,7 @@ $(document).ready(function(){
             },
             error:function(err)
             {
+                toastr.warning("Voucher Not Found","Warning")
                 console.log(err)
             }
         })

@@ -24,7 +24,7 @@ class adminController extends Controller
         return response()->json([
             'Events' => Event::select("*")->paginate(10),
             'Announcement' => Announcement::select("*")->paginate(10),
-            'RawLog' => RawLog::select("*")->paginate(10),
+            'RawLog' => RawLog::with(['students'])->paginate(10),
             'Admin' => Admin::select("*")->paginate(10),
             'Students' => Students::select("*")->paginate(10),
             'Courses' => Course::select("*")->paginate(10)
@@ -55,7 +55,7 @@ class adminController extends Controller
 
             case("Rawlogs"):
                 $data = 
-                Rawlog::select('*')
+                Rawlog::with('students')
                 ->where('event_id','like', '%'.$searchString.'%')
                 ->orWhere('student_id','like', '%'.$searchString.'%')
                 ->orWhere('entrance_voucher','like', '%'.$searchString.'%')
@@ -64,7 +64,7 @@ class adminController extends Controller
             break;
             case("Admin"):
                 $data = 
-                Admin::select('*')
+                Admin::with('students')
                 ->where('username','like', '%'.$searchString.'%')
                 ->orWhere('type','like', '%'.$searchString.'%')
                 ->orWhere('position','like', '%'.$searchString.'%')
@@ -117,6 +117,43 @@ class adminController extends Controller
         
         return response()->json("success");
 
+    }
+
+    public function addStudentToVouch(Request $request)
+    {
+        $request->validate([
+            'EventId' => 'required|exists:events,event_id',
+            'StudentId' => 'required|exists:users,student_id',
+            'Entrance' => 'required'
+        ],
+        [
+            'EventId.exists' => 'Event ID is not existed',
+            'StudentId.exists' => 'Student ID is not existed'
+        ]);
+
+        if(!is_null(Rawlog::where('event_id', $request->EventId)->where('student_id', $request->StudentId)->first()))
+        {
+            return response()->json('existed in Rawlog');
+        }
+
+        $rawlog = new Rawlog();
+
+        $rawlog->event_id = $request->EventId;
+        $rawlog->student_id = $request->StudentId;
+        $rawlog->entrance_voucher = $request->Entrance;
+        $rawlog->exit_voucher = $request->exitVoucher;
+        $rawlog->save();
+
+        return response()->json("success");
+    }
+
+    public function editStudentVouch(Request $request)
+    {
+        Rawlog::where('event_id', $request->eventId)
+        ->where('student_id', $request->studentId)
+        ->update(['exit_voucher' => $request->exitVoucher]);
+
+        return response()->json("success");
     }
     
     public function editAdmin(Request $request){

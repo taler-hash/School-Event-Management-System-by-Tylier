@@ -7,7 +7,8 @@ $(document).ready(function(){
     let announcement = []
     let searchString = ""
     let eventId = ""
-    rows = 10
+    let sortBy = 'desc'
+    let rows = 10
     let total = 0
     //Fetch Course
     function fetchCourse()
@@ -201,7 +202,7 @@ $(document).ready(function(){
     $(document).on('click','#showInfoButton',function(){
 
         let filteredEvent = events.filter(e=> {return e.event_id === $(this).data('eventid')})
-        eventId = filteredEvent
+        eventId = filteredEvent[0].event_id
         refreshShowInfoTable()
         $("#showInfoEvent").removeClass('opacity-0').removeClass('invisible')
         $("#showInfoModalContent").removeClass('scale-0')
@@ -226,11 +227,12 @@ $(document).ready(function(){
             data:
             {
                 eventId:eventId,
-                rows:rows,
+                sortBy:sortBy,
                 searchString:searchString
             },
             success:function(res)
             {
+                console.log(res)
                 vouchedStudents = res
             },
             error:function(err)
@@ -245,13 +247,14 @@ $(document).ready(function(){
     function refreshShowInfoTable(){
         fetchVouchedStudents().then(res=>{
             $(".showInfoTable").html(
-                res.data.length != 0 ?
-                    res.data.map((e,i)=>{
+                res.length != 0 ?
+                res.map((e,i)=>{
                         return `<tr class="bg-white border-b">
                                     <td class="px-6 py-4">${i+1}</td>
                                     <td class="px-6 py-4">${e.student_id}</td>
                                     <td class="px-6 py-4">${e.students.fullname}</td>
-                                    <td class="px-6 py-4">${e.entrance_voucher}</td>
+                                    <td class="px-6 py-4">${e.students.course}</td>
+                                    <td class="px-6 py-4">${e.entrance_voucher != null ? 'Vouched' : 'not Vouched'}</td>
                                     <td class="px-6 py-4">${e.exit_voucher == null ? `not Vouched` : e.exit_voucher}</td>
                                 </tr>`
                     })
@@ -259,43 +262,19 @@ $(document).ready(function(){
                 `<tr
                 class="border-b bg-neutral-100 ">
                 <td
-                  colspan="5"
+                  colspan="6"
                   class="whitespace-nowrap px-6 py-4 text-center">
                   No Data Found
                 </td>
               </tr>`
                     
             )
-            $(".paginationContainer").html(
-                (res.links).map(e=>{
-                    return `<button ${e.url == null ? `disabled="true"` : e.active? `disabled="true"` : "" }
-                        links="${ e.url != null && new URL(e.url).searchParams.get("page")}"
-                        class="paginationLinks text-xs lg:text-base px-2 py-1 text-sm rounded border 
-                        ${e.url == null ? `bg-gray-100 cursor-default` : e.active? `bg-lime-500 cursor-default text-white `:
-                        `bg-white cursor-pointer transition hover:scale-125 focus:text-white hover:bg-lime-500 hover:text-white `}">${e.label}</button> `
-                })
-            )
-            $(".paginationLinks").click(function(){
-                if($(this).attr("links") != "false")
-                {
-                    $(this).addClass("bg-lime-500")
-                    $(".paginationLinks").not(this).removeClass("bg-lime-500 text-white")
-                }
-            })
-
-            $(".paginationLinks").click(function(){
-                if($(this).attr("links") != "false")
-                {
-                    page = $(this).attr("links")
-                    refreshShowInfoTable();
-                }
-            })
         })
     }
 
     //Filter Entries Show Info Table
-    $(document).on('change','#showInfoTableEntries', function(){
-        rows = $(this).val()
+    $(document).on('change','#showInfoSortCourse', function(){
+        sortBy = $(this).val()
         refreshShowInfoTable()
     })
     
@@ -312,87 +291,22 @@ $(document).ready(function(){
 
     //Print Present Student Show Info Table
     $(document).on('click','#printPresentStudentInfoTable', function(){
-        $.ajax({
-            headers:header,
-            url:'/api/printPresentStudents',
-            data:
-            {
-                eventId:$("#showInfoEventId").val(),
-                creator:$("#managerName").text()
-            },
-            method:'post',
-            success:function(res)
-            {
-                console.log(res)
-                if(res.length == 0)
-                {
-                    toastr.info("No Student are present at the moment", "Info")
-                }
-                else
-                {
-                    if(res.length === 0)
-                    {
-                        toastr.info("No student are registered")
-                    }
-                    else
-                    {
-                        // Create a new div to hold the vouchers
-                        var vouchersDiv = $("<div>");
-
-                        // Loop through the vouchers array and create a div for each voucher
-                        for (var i = 0; i < res.length; i++) {
-                        var voucherDivIn = $(`<tr style="padding:10px; border: 1px solid; margin-right: 0.25rem;margin-top: 0.25rem;height: min-content;page-break-inside: avoid;">`)
-                            .html(`
-                                <td style="padding-top: 10px;padding-bottom: 20px;padding-left: 20px;padding-right: 20px; border-collapse: collapse;border: 1px solid black;">${i+1}</td>
-                                <td style="padding-top: 10px;padding-bottom: 20px;padding-left: 20px;padding-right: 20px; border-collapse: collapse;border: 1px solid black;">${res[i].student_id}</td>
-                                <td style="padding-top: 10px;padding-bottom: 20px;padding-left: 20px;padding-right: 20px; border-collapse: collapse;border: 1px solid black;">${res[i].students.fullname}</td>
-                                <td style="padding-top: 10px;padding-bottom: 20px;padding-left: 20px;padding-right: 20px; border-collapse: collapse;border: 1px solid black;">${res[i].entrance_voucher}</td>
-                                <td style="padding-top: 10px;padding-bottom: 20px;padding-left: 20px;padding-right: 20px; border-collapse: collapse;border: 1px solid black;">${res[i].exit_voucher == null ? `Not Vouched` :res[i].exit_voucher }</td>`);
-                        vouchersDiv.append(voucherDivIn);
-                        }
-
-                        vouchersDiv.children().last().css('page-break-after', 'auto');
-                        var popupWin = window.open('', '_blank', 'fullscreen=yes');
-                        popupWin.document.open();
-                        popupWin.document.write(
-                            `<html>
-                                <head>
-                                    <title>
-                                       Event ID: ${$('#showInfoEventId').val()} /${$("#showInfoHeader").val()}  / ${$("#showInfoDate").val()} ${$("#showInfoFrom").text()} - ${$("#showInfoTo").text()}
-                                    </title>
-                                </head>
-                                <body>
-                                    <table class="width:100%">
-                                        <thead style="border: 1px solid black; border-collapse: collapse;"> 
-                                            <tr>
-                                                <th style="padding-top: 10px;padding-bottom: 20px;padding-left: 20px;padding-right: 20px; border-collapse: collapse;border: 1px solid black;">#</th>
-                                                <th style="padding-top: 10px;padding-bottom: 20px;padding-left: 20px;padding-right: 20px; border-collapse: collapse;border: 1px solid black;">Student ID</th>
-                                                <th style="padding-top: 10px;padding-bottom: 20px;padding-left: 20px;padding-right: 20px; border-collapse: collapse;border: 1px solid black;">Full Name</th>
-                                                <th style="padding-top: 10px;padding-bottom: 20px;padding-left: 20px;padding-right: 20px; border-collapse: collapse;border: 1px solid black;">In</th>
-                                                <th style="padding-top: 10px;padding-bottom: 20px;padding-left: 20px;padding-right: 20px; border-collapse: collapse;border: 1px solid black;">Out</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        ${vouchersDiv.html()}
-                                        </tbody>
-                                    </table>
-                                </body>
-                            </html>`);
-                        popupWin.document.close();
-                        popupWin.print();
-                    }
-                    
-                }
-            },
-            error:function(err)
-            {
-                console.log(err)
-            }
-        })
+        var divToPrint = document.getElementById("showInfoTable");
+        var newWin = window.open("");
+        newWin.document.write(`<html><head><title>${events[0].event_id} ${events[0].header} / ${events[0].start_date} ${convertTime(events[0].start_time)} - ${convertTime(events[0].end_time)}</title>`);
+        newWin.document.write('<link rel="stylesheet" href="https://cdn.tailwindcss.com" />');
+        newWin.document.write('<style>@media print { * { color: inherit !important; background: transparent !important; box-shadow: none !important; } table { border-collapse: collapse !important; width: 100% !important; margin-bottom: 1rem !important; color: #1a202c !important; font-size: 1rem !important; font-weight: 400 !important; line-height: 1.5 !important; border: 1px solid #e2e8f0 !important; } th, td { padding: 0.5rem !important; text-align: left !important; border-bottom-width: 1px !important; border-bottom-color: #e2e8f0 !important; border-top: 1px solid #e2e8f0 !important; border-left: 1px solid #e2e8f0 !important; } }</style>');
+        newWin.document.write('</head><body>');
+        newWin.document.write(divToPrint.outerHTML);
+        newWin.document.write('</body></html>');
+        newWin.print();
+        newWin.close();
     })
 
     //Close Show Info Modal
     $(document).on('click','#showInfoClose',function(){
+        $('#showInfoSortCourse').val('asc')
+        sortBy = 'asc'
         $(".showInfoModal").empty()
         let modal = $(this).parent().parent().parent().parent()
         $("#showInfoEvent").addClass('opacity-0')

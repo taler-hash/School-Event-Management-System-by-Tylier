@@ -115,18 +115,22 @@ class managerController extends Controller
 
     public function vouchedStudents(Request $request){
         $searchString = $request->searchString;
-        $data = RawLog::with("students:student_id,fullname,course,year")
+        $sortBy = $request->sortBy;
+        $data = RawLog::with(["students" => function ($q) use ($sortBy){
+            $q->orderBy('course',$sortBy);
+        }])
         ->where('event_id', $request->eventId)
-        ->where(function($query) use ($request) {
-            $query->where('student_id','like', '%'.$request->searchString.'%')
-                    ->orWhere('entrance_voucher','like', '%'.$request->searchString.'%')
-                    ->orWhere('exit_voucher','like', '%'.$request->searchString.'%')
-                  ->orWhereHas('students', function($q) use ($request){
-                      $q->where('fullname','like', '%'.$request->searchString.'%');
+        ->where(function($query) use ($searchString) {
+            $query->where('student_id','like', '%'.$searchString.'%')
+                    ->orWhere('entrance_voucher','like', '%'.$searchString.'%')
+                    ->orWhereNull('exit_voucher','like', '%'.$searchString.'%')
+                  ->orWhereHas('students', function($q) use ($searchString){
+                      $q->where('fullname','like', '%'.$searchString.'%');
+                      $q->orWhere('course','like', '%'.$searchString.'%');
                   });
         })
         
-        ->paginate(10);
+        ->get();
         return response()->json($data);
     }
 

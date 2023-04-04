@@ -1,5 +1,5 @@
 <div id="rawlogModal" tabindex="-1" aria-hidden="true" class="fixed invisible transition opacity-0 bg-gray-100/50 top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-hidden md:inset-0 h-screen md:h-full flex items-center justify-center">
-    <div class="relative w-full h-auto max-w-2xl md:h-auto">
+    <div class="relative w-full h-auto max-w-6xl md:h-auto">
         <!-- Modal content -->
         <div id="rawlogModalContent" class="relative bg-white rounded-lg shadow transition scale-0 duration-500 h-auto">
             <!-- Modal header -->
@@ -15,7 +15,12 @@
             <!-- Modal body -->
             <div class="p-6 space-y-4">
                 <div class="">
-                    <div class="flex justify-end">
+                    <div class="flex">
+                        <div class="grow flex items-end pb-1">
+                            <button class="buttonAddVoucher text-white right-2.5 bottom-2.5 bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2">
+                                Add
+                            </button>
+                        </div>
                         <div class="relative w-72 mb-2">
                             <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                 <svg aria-hidden="true" class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -38,10 +43,19 @@
                                         Student ID
                                     </th>
                                     <th scope="col" class="px-6 py-3">
+                                       Fullname
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
+                                        Course
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
                                         Entrance Voucher
                                     </th>
                                     <th scope="col" class="px-6 py-3 text-center">
                                         Exit Voucher
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-center">
+                                        Action
                                     </th>
                                 </tr>
                             </thead>

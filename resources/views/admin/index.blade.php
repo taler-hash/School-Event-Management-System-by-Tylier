@@ -126,6 +126,8 @@
     @include('/admin/modals/eventModal')
     @include('/admin/modals/announcementModal')
     @include('/admin/modals/rawlogsModal')
+    @include('/admin/modals/editVoucherModal')
+    @include('/admin/modals/addVoucherModal')
     @include('/admin/modals/adminModal')
     @include('/admin/modals/studentModal')
     @include('/admin/modals/coursesModal')

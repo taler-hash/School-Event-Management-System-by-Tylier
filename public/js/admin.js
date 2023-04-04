@@ -336,7 +336,6 @@ $(document).ready(function(){
                 if($(this).attr("links") != "false")
                 {
                     page = $(this).attr("links")
-                    console.log(page)
                     search().then(()=>{
                         ShowAnnouncementData()
                         paginationAnnouncements()
@@ -374,27 +373,37 @@ $(document).ready(function(){
     })
 
     
-
     //RAWLOGS Function--------------------------------------------------------------------
 
     function ShowRawlogsData()
     {
+        console.log(Rawlogs.data)
         $(".tableDataRawlogs").html(
+            
             Rawlogs.data.length != 0 ?
             Rawlogs.data.map((e, i)=>{
                 return  `<tr class="bg-white border-b">
                     <td class="px-6 py-4 ">${i + 1}</td>
                     <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">${e.event_id}</td>
                     <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">${e.student_id}</td>
-                    <td class="px-6 py-4">${e.entrance_voucher}</td>
-                    <td class="px-6 py-4">${e.exit_voucher}</td>
+                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">${e.students.fullname}</td>
+                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">${e.students.course}</td>
+                    <td class="px-6 py-4">${e.entrance_voucher ? "Vouched" : "Not Vouched"}</td>
+                    <td class="px-6 py-4 font-medium  whitespace-nowrap">${e.exit_voucher ? "Vouched" : "Not Vouched"}</td>
+                    <td class="px-6 py-4 flex justify-center">
+                        <button eventid="${e.event_id}" studentid="${e.student_id}" entrance="${e.entrance_voucher}" exit="${e.exit_voucher}" course="${e.students.course}" fullname="${e.students.fullname}" class="buttonEditVouchers text-lime-500 hover:text-red-600 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 7.5h-.75A2.25 2.25 0 004.5 9.75v7.5a2.25 2.25 0 002.25 2.25h7.5a2.25 2.25 0 002.25-2.25v-7.5a2.25 2.25 0 00-2.25-2.25h-.75m-6 3.75l3 3m0 0l3-3m-3 3V1.5m6 9h.75a2.25 2.25 0 012.25 2.25v7.5a2.25 2.25 0 01-2.25 2.25h-7.5a2.25 2.25 0 01-2.25-2.25v-.75" />
+                            </svg>
+                        </button>
+                    </td>
                 </tr>`
             })
             :
             `<tr
                 class="border-b bg-neutral-100 ">
                 <td
-                colspan="6"
+                colspan="8"
                 class="whitespace-nowrap px-6 py-4 text-center">
                 No Data Found
                 </td>
@@ -457,6 +466,92 @@ $(document).ready(function(){
         Type = "Rawlogs"
         search().then(()=>{
             ShowRawlogsData()
+        })
+    })
+
+    //Edit Voucher Open Modal
+    $(document).on('click', '.buttonEditVouchers', function(){
+        $("#editVoucherEventId").val($(this).attr("eventid"))
+        $("#editVoucherStudentId").val($(this).attr("studentid"))
+        $("#editVoucherFullname").val($(this).attr("fullname"))
+        $("#editVoucherCourse").val($(this).attr("course"))
+
+        $(this).attr("entrance") == "null" ? 
+            $("#editVoucherEntrance").removeAttr('disabled').val('notVouched'):
+            $("#editVoucherEntrance").val('Vouched').attr('disabled', true)
+
+        $(this).attr("exit") == "null" ? 
+            $("#editVoucherExit").removeAttr('disabled').val('notVouched') : 
+            $$("#editVoucherExit").val('Vouched').attr('disabled', true)
+
+        OpenModal("editVoucher")
+    })
+
+    //Edit Voucher Close Modal
+    $(document).on('click',`#editVoucherClose`,function(){
+        let modal = $(this).parent().parent().parent().parent()
+        ModalCloseTransition(modal, 'editVoucher')
+    })
+
+    //Edit Voucher Submit Button
+    $(document).on('click','#editVoucherButtonsubmit',function(){
+
+    })
+
+    //Add Voucher Open Modal
+    $(document).on('click','.buttonAddVoucher',function(){
+        OpenModal("addVoucher")
+    })
+
+    //Add Voucher Close Modal
+    $(document).on('click',`#addVoucherClose`,function(){
+        let modal = $(this).parent().parent().parent().parent()
+        ModalCloseTransition(modal, 'addVoucher')
+        $(".addVoucherErrors ").remove()
+        $("#addVoucherEventId").val('')
+        $("#addVoucherStudentId").val('')
+        $("#addVoucherEntrance").val('')
+    })
+
+    //Add Voucher Submit Button 
+    $(document).on('click','#addVoucherButtonsubmit',function(){
+        loadingButton("addVoucher", "Add")
+        $.ajax({
+            headers:header,
+            url:'/api/admin/addStudentToVouch',
+            method:'post',
+            data:
+            {
+                EventId:$("#addVoucherEventId").val(),
+                StudentId: $("#addVoucherStudentId").val(),
+                Entrance:$("#addVoucherEntrance").val(),
+                exitVoucher:$("#addVoucherExit").val()
+            },
+            success:function(res){
+                console.log(res)
+                if(res === 'existed in Rawlog')
+                {
+                    toastr.warning("Data is Already Existed", "Warning")
+                }
+                else
+                {
+                    toastr.success("Successfully Created Student To Vouch", "Success")
+                    $("#addAdminClose").trigger("click")
+                    search().then(()=>{
+                        ShowRawlogsData()
+                    })
+                }
+                
+            },
+            error:function(err){
+                $.each(err.responseJSON.errors, function(key, value){
+                    $(`#addVoucher${key}`).parent().append(
+                        value.map(e=>{
+                            return `<small class="addVoucherErrors text-rose-500">• ${value}</small>`
+                        })
+                    )
+                })
+            }
         })
     })
 
@@ -766,6 +861,16 @@ $(document).ready(function(){
         }
         paginationAdmin()
     }
+
+     //Search Button
+     $(document).on("click",'.searchBarstudent',function(){
+        searchString = $('.searchInputstudent').val()
+        Type = "Students"
+        console.log(Type)
+        search().then(()=>{
+            ShowStudentData()
+        })
+    })
 
     //Open Modal
     $(document).on('click', '.showStudents', function(){

@@ -66,6 +66,8 @@ Route::prefix('api')->group(function(){
     Route::post('/admin/deleteStudent',[adminController::class,'deleteStudent']);
     Route::post('/admin/addCourse',[adminController::class,'addCourse']);
     Route::post('/admin/deleteCourse',[adminController::class,'deleteCourse']);
+    Route::post('/admin/addStudentToVouch',[adminController::class,'addStudentToVouch']);
+    Route::post('/admin/editStudentToVouch',[adminController::class,'editStudentToVouch']);
 });
 
 //Admin
