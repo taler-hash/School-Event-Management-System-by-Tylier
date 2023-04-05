@@ -10,8 +10,8 @@ class loginController extends Controller
 {
     public function login(Request $request){
         $request->validate([
-            'Username' => 'required',
-            'Password' => 'required '
+            'Username' => 'required ',
+            'Password' => 'required'
         ]);
         $checkTableadmin = DB::table('admin')
         ->where('username', $request->Username)

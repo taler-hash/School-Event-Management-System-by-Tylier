@@ -71,10 +71,9 @@ $(document).ready(function(){
     //RefreshEvents
     function refreshEvents()
     {
-        console.log(vouch)
-        function compareTime(time, comparator)
+        function compareTime(end_time, start_time, comparator)
         {
-            const targetTimeString = time;
+            const targetTimeString = end_time;
             const [targetHours, targetMinutes] = targetTimeString.split(":");
             const targetDateObj = new Date();
             targetDateObj.setHours(targetHours);
@@ -93,27 +92,61 @@ $(document).ready(function(){
             }
             else if(comparator == 'greaterThan')
             {
-                if (targetTimeValue > currentTimeValue) {
-                    return true;
-                } 
-                else {
-                    return false;
-                }
-            }
-            else if (comparator == '1hr')
-            {
-                if(targetDateObj.setHours(targetHours) < targetDateObj.setHours(targetHours + 1))
+                const startTargetTimeString = start_time;
+                const [startTargetHours, startTargetMinutes] = startTargetTimeString.split(":");
+                const startTargetDateObj = new Date();
+                startTargetDateObj.setHours(startTargetHours);
+                startTargetDateObj.setMinutes(startTargetMinutes);
+
+                const startTargetTimeValue = startTargetDateObj.getTime();
+
+                // Add 20 minutes to startTargetDateObj
+                const startTargetTimeValueplus20minutes = startTargetDateObj.setMinutes(startTargetDateObj.getMinutes() + 20);
+
+                if(currentTimeValue >= startTargetTimeValue && currentTimeValue <= startTargetTimeValueplus20minutes)
                 {
                     return true
                 }
                 else
                 {
-                    console.log(targetDateObj.setHours(targetHours) < targetDateObj.setHours(targetHours + 1))
+                    return false
+                }
+
+            }
+            else if (comparator == '1hr')
+            {
+
+                if(currentTimeValue > targetDateObj.setTime(targetTimeValue + (60 * 60 * 1000)) )
+                {
+                    return true
+                }
+                else
+                {
                     return false
                 }
             }
             
         }
+        function compareDateToCurrent(dateString) {
+            // create a new Date object representing the current date
+            const currentDate = new Date();
+          
+            // split the date string into its year, month, and day components
+            const [year, month, day] = dateString.split('-').map(str => parseInt(str));
+          
+            // compare the year, month, and day components separately
+            const isYearEqual = currentDate.getFullYear() === year;
+            const isMonthEqual = currentDate.getMonth() === month - 1;
+            const isDayEqual = currentDate.getDate() === day;
+          
+            // check if all components are equal
+            if (isYearEqual && isMonthEqual && isDayEqual) {
+              return true;
+            } else {
+              return false;
+            }
+        }
+
         fetchEvents().then(data=>{
             data.length !== 0 ? 
             $("#managerEventsContainer").html(
@@ -132,35 +165,36 @@ $(document).ready(function(){
                         <p class="text-xs mb-2">Exit: ${vouch.filter(x=> {return x.student_id == $("#studentName").text() && x.event_id == e.event_id && x.exit_voucher !== null }).length == 1 ? `Vouched`: `Not Yet Vouched`}</p>
                         <p class="mb-3 font-normal text-gray-700 ">${e.description}</p>
                         <div class="w-full flex justify-between">
-                        
-                        ${compareTime(e.end_time, '1hr') ?
-                            `${compareTime(e.end_time, 'greaterThan') ?
-                                `${vouch.filter(x=> {return x.student_id == $("#studentName").text() && x.event_id == e.event_id}).length == 0 ?
-                                    `<button data-eventid="${e.event_id}" data-createdby="${e.created_by}" data-eventHeader="${e.header}" class="entranceVoucher inline-flex items-center px-3 py-2 text-sm font-medium text-center text-amber-400 bg-lime-600 rounded-lg hover:bg-green-600 transition">
-                                        Entrance Voucher
-                                    </button> `
+                        ${compareDateToCurrent(e.start_date) ?
+                          `${!compareTime(e.end_time,'', '1hr') ?
+                                `${compareTime(e.end_time,e.start_time, 'greaterThan') ?
+                                    `${vouch.filter(x=> {return x.student_id == $("#studentName").text() && x.event_id == e.event_id}).length == 0 ?
+                                        `<button data-eventid="${e.event_id}" data-createdby="${e.created_by}" data-eventHeader="${e.header}" class="entranceVoucher inline-flex items-center px-3 py-2 text-sm font-medium text-center text-amber-400 bg-lime-600 rounded-lg hover:bg-green-600 transition">
+                                            Entrance Voucher
+                                        </button> `
+                                        :
+                                        ``
+                                    }`
+                                : 
+                                ``}
+                                ${compareTime(e.end_time,'', 'lessThan') ? 
+                                    `${vouch.filter(x=>{return x.student_id == $("#studentName").text() && x.event_id == e.event_id}).filter(d=> d.exit_voucher == null).length == 1 ?
+                                        `<button data-eventid="${e.event_id}" data-createdby="${e.created_by}" data-eventHeader="${e.header}"  class="exitVoucher inline-flex items-center px-3 py-2 text-sm font-medium text-center text-amber-400 bg-red-600 rounded-lg hover:bg-green-600 transition">
+                                            Exit Voucher
+                                        </button>`
+                                        :
+                                        ``
+                                    }`
                                     :
                                     ``
-                                }`
-                            : 
-                            ``}
-                              
-                            ${compareTime(e.end_time, 'lessThan') ? 
-                                `${vouch.filter(x=>{return x.student_id == $("#studentName").text() && x.event_id == e.event_id}).filter(d=> d.exit_voucher == null).length == 1 ?
-                                    `<button data-eventid="${e.event_id}" data-createdby="${e.created_by}" data-eventHeader="${e.header}"  class="exitVoucher inline-flex items-center px-3 py-2 text-sm font-medium text-center text-amber-400 bg-red-600 rounded-lg hover:bg-green-600 transition">
-                                        Exit Voucher
-                                    </button>`
-                                    :
-                                    ``
-                                }`
+                                }
+                                `
                                 :
-                                ``
-                            }
-                            `
-                            :
-                            
-                            `<span class="text-red-500">The Event has been Ended</span>`
-                        }
+                                `<span class="text-red-500">The Event has been Ended</span>` 
+                            }`  
+                        
+                        : `<span class="text-green-500">The Event has not been Started</span>` }
+                        
                        
                         </div>
                     </div>
