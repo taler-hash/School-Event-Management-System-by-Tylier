@@ -147,7 +147,7 @@ class adminController extends Controller
         return response()->json("success");
     }
 
-    public function editStudentVouch(Request $request)
+    public function editStudentToVouch(Request $request)
     {
         Rawlog::where('event_id', $request->eventId)
         ->where('student_id', $request->studentId)

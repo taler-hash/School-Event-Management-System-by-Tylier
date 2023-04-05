@@ -481,11 +481,11 @@ $(document).ready(function(){
         $("#editVoucherCourse").val($(this).attr("course"))
 
         $(this).attr("entrance") == "null" ? 
-            $("#editVoucherEntrance").removeAttr('disabled').val('notVouched'):
+            $("#editVoucherEntrance").removeAttr('disabled').val(''):
             $("#editVoucherEntrance").val('Vouched').attr('disabled', true)
 
         $(this).attr("exit") == "null" ? 
-            $("#editVoucherExit").removeAttr('disabled').val('notVouched') : 
+            $("#editVoucherExit").removeAttr('disabled').val('') : 
             $("#editVoucherExit").val('Vouched').attr('disabled', true)
 
         OpenModal("editVoucher")
@@ -499,7 +499,36 @@ $(document).ready(function(){
 
     //Edit Voucher Submit Button
     $(document).on('click','#editVoucherButtonsubmit',function(){
-
+        if($('#editVoucherExit').val().length == 0)
+        {
+            toastr.info("No Changes Were Made", "Info")
+        }
+        else
+        {
+            loadingButton("editVoucher", "Update")
+            $.ajax({
+                headers:header,
+                url:'/api/admin/editStudentToVouch',
+                method:'post',
+                data:{
+                    eventId:$('#editVoucherEventId').val(),
+                    studentId:$('#editVoucherStudentId').val(),
+                    exitVoucher:$('#editVoucherExit').val()
+                },
+                success:function(res)
+                {
+                    toastr.success("Successfully Updated", "Success")
+                    $("#editVoucherClose").trigger("click")
+                    search().then(()=>{
+                        ShowRawlogsData()
+                    })
+                },
+                error:function(err)
+                {
+                    console.log(err);
+                }
+            })
+        }
     })
 
     //Add Voucher Open Modal
@@ -540,7 +569,7 @@ $(document).ready(function(){
                 else
                 {
                     toastr.success("Successfully Created Student To Vouch", "Success")
-                    $("#addAdminClose").trigger("click")
+                    $("#addVoucherClose").trigger("click")
                     search().then(()=>{
                         ShowRawlogsData()
                     })
