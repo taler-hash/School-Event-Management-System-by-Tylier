@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Admin;
+use DB;
 
 class adminSeeder extends Seeder
 {
@@ -35,6 +36,15 @@ class adminSeeder extends Seeder
             $admin->type = 'manager';
             $admin->position = 'ssg';
             $admin->save();
+
+            DB::table('course')->insert([
+                ['course'=> 'BSIT'],
+                ['course'=> 'BSED'],
+                ['course'=> 'BaPolsci'],
+                ['course'=> 'BEED'],
+                ['course'=> 'BSHM'],
+                ['course'=> 'BSHRM'],
+            ]);
         }
     }
 }

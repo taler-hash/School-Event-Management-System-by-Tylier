@@ -14,13 +14,6 @@ class courseSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('course')->insert([
-            ['course'=> 'BSIT'],
-            ['course'=> 'BSED'],
-            ['course'=> 'BaPolsci'],
-            ['course'=> 'BEED'],
-            ['course'=> 'BSHM'],
-            ['course'=> 'BSHRM'],
-        ]);
+       
     }
 }
