@@ -1,7 +1,7 @@
-<div id="rawlogModal" tabindex="-1" aria-hidden="true" class="fixed invisible transition opacity-0 bg-gray-100/50 top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-hidden md:inset-0 h-screen md:h-full flex items-center justify-center">
+<div id="rawlogModal" tabindex="-1" aria-hidden="true" class="fixed invisible transition opacity-0 bg-gray-600/50 top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-hidden md:inset-0 h-screen md:h-full flex items-center justify-center">
     <div class="relative w-full h-auto max-w-6xl md:h-auto">
         <!-- Modal content -->
-        <div id="rawlogModalContent" class="relative bg-white rounded-lg shadow transition scale-0 duration-500 h-auto">
+        <div id="rawlogModalContent" class="relative bg-white rounded-lg shadow transition scale-0 duration-500 h-auto border border-gray-400 shadow-md shadow-gray-400">
             <!-- Modal header -->
             <div class="flex items-start justify-between p-4 border-b rounded-t ">
                 <h3 class="text-xl font-semibold text-gray-900">

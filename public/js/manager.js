@@ -480,7 +480,7 @@ $(document).ready(function(){
                         for (var i = 0; i < res[0].voucherIn.length; i++) {
                         var voucherDivIn = $(`<div style="padding:10px; border: 1px solid; margin-right: 0.25rem;margin-top: 0.25rem;height: min-content;page-break-inside: avoid;">`)
                             .html(
-                                `<div style="text-align: center;font-size:0.5rem;line-height:1rem">Entrance Voucher</div>
+                                `<div style="text-align: center;font-size:0.5rem;line-height:1rem">Entrance Code</div>
                                 <div style="text-align: center;font-size: 1.5rem;line-height: 2rem; font-weight: 900">
                                     ${res[0].voucherIn[i].voucher}
                                 </div>
@@ -496,7 +496,7 @@ $(document).ready(function(){
                         for (var i = 0; i < res[0].voucherOut.length; i++) {
                             var voucherDivOut = $(`<div style="padding:10px; border: 1px solid; margin-right: 0.25rem;margin-top: 0.25rem;height: min-content;page-break-inside: avoid;">`)
                             .html(
-                                `<div style="text-align: center;font-size:0.5rem;line-height:1rem">Exit Voucher</div>
+                                `<div style="text-align: center;font-size:0.5rem;line-height:1rem">Exit Code</div>
                                 <div style="text-align: center;font-size: 1.5rem;line-height: 2rem; font-weight: 900">
                                     ${res[0].voucherOut[i].voucher}
                                 </div>

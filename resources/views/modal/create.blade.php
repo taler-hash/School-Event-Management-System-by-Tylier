@@ -1,4 +1,4 @@
-<div id="createModal" tabindex="-1" aria-hidden="true" class="fixed invisible transition opacity-0 bg-gray-100/50 top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-screen md:h-full flex items-center justify-center">
+<div id="createModal" tabindex="-1" aria-hidden="true" class="fixed invisible transition opacity-0 bg-gray-600/50 top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-screen md:h-full flex items-center justify-center">
     <div class="relative w-full h-full max-w-lg md:h-auto">
         <!-- Modal content -->
         <div id="createModalContent" class="relative bg-white rounded-lg shadow transition scale-0 duration-500">
