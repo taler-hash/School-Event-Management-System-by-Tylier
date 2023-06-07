@@ -254,8 +254,8 @@ $(document).ready(function(){
                                     <td class="px-6 py-4">${e.student_id}</td>
                                     <td class="px-6 py-4">${e.students.fullname}</td>
                                     <td class="px-6 py-4">${e.students.course}</td>
-                                    <td class="px-6 py-4">${e.entrance_voucher != null ? 'Vouched' : 'not Vouched'}</td>
-                                    <td class="px-6 py-4">${e.exit_voucher == null ? `not Vouched` : e.exit_voucher}</td>
+                                    <td class="px-6 py-4">${e.entrance_voucher != null ? e.entrance_voucher : 'N/A'}</td>
+                                    <td class="px-6 py-4">${e.exit_voucher == null ? `N/A` : e.exit_voucher}</td>
                                 </tr>`
                     })
                 :

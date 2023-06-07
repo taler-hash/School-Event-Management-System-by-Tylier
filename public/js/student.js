@@ -170,7 +170,7 @@ $(document).ready(function(){
                                 `${compareTime(e.end_time,e.start_time, 'greaterThan') ?
                                     `${vouch.filter(x=> {return x.student_id == $("#studentName").text() && x.event_id == e.event_id}).length == 0 ?
                                         `<button data-eventid="${e.event_id}" data-createdby="${e.created_by}" data-eventHeader="${e.header}" class="entranceVoucher inline-flex items-center px-3 py-2 text-sm font-medium text-center text-amber-400 bg-lime-600 rounded-lg hover:bg-green-600 transition">
-                                            Entrance Voucher
+                                            Entrance Code
                                         </button> `
                                         :
                                         ``
@@ -180,7 +180,7 @@ $(document).ready(function(){
                                 ${compareTime(e.end_time,'', 'lessThan') ? 
                                     `${vouch.filter(x=>{return x.student_id == $("#studentName").text() && x.event_id == e.event_id}).filter(d=> d.exit_voucher == null).length == 1 ?
                                         `<button data-eventid="${e.event_id}" data-createdby="${e.created_by}" data-eventHeader="${e.header}"  class="exitVoucher inline-flex items-center px-3 py-2 text-sm font-medium text-center text-amber-400 bg-red-600 rounded-lg hover:bg-green-600 transition">
-                                            Exit Voucher
+                                            Exit Code
                                         </button>`
                                         :
                                         ``
